@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 min-h-screen bg-bg-primary text-text-primary;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* Button styles */
+  .btn-primary {
+    @apply bg-accent-primary text-white px-5 py-2.5 rounded-md font-medium text-sm;
+    @apply hover:bg-accent-hover active:bg-accent-active;
+    @apply transition-all duration-150 ease-in-out;
+    @apply disabled:bg-text-tertiary disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent text-text-primary border border-border-color px-5 py-2.5 rounded-md font-medium text-sm;
+    @apply hover:border-border-hover hover:bg-bg-secondary;
+    @apply transition-all duration-150 ease-in-out;
+  }
+
+  .btn-icon {
+    @apply w-10 h-10 flex items-center justify-center rounded-md;
+    @apply text-text-secondary hover:bg-bg-secondary;
+    @apply transition-all duration-150 ease-in-out;
+  }
+
+  /* Input styles */
+  .input-field {
+    @apply bg-bg-primary border border-border-color rounded-md px-4 py-3;
+    @apply text-base text-text-primary;
+    @apply focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary focus:ring-opacity-10;
+    @apply transition-all duration-150 ease-in-out;
+    @apply placeholder:text-text-tertiary;
+    @apply disabled:bg-bg-secondary disabled:cursor-not-allowed;
+  }
+
+  /* Card styles */
+  .card {
+    @apply bg-bg-primary border border-border-color rounded-lg p-4 shadow-sm;
+  }
+
+  .card-hover {
+    @apply transition-all duration-150 ease-in-out;
+    @apply hover:border-border-hover hover:shadow-md hover:-translate-y-0.5;
+  }
+}
+
+/* Motion reduction */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
