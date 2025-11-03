@@ -8,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from app.config import settings
 from app.database import init_db
 from app.utils.logging import setup_logging
-from app.routes import auth, config, models
+from app.routes import auth, config, models, conversations, chat, prompts, export
 
 # Setup logging
 setup_logging()
@@ -164,5 +164,9 @@ async def root():
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(config.router, prefix=settings.API_V1_PREFIX)
 app.include_router(models.router, prefix=settings.API_V1_PREFIX)
+app.include_router(conversations.router, prefix=settings.API_V1_PREFIX)
+app.include_router(chat.router, prefix=settings.API_V1_PREFIX)
+app.include_router(prompts.router, prefix=settings.API_V1_PREFIX)
+app.include_router(export.router, prefix=settings.API_V1_PREFIX)
 
-logger.info("FastAPI application initialized")
+logger.info("FastAPI application initialized with all Phase 2 routes")

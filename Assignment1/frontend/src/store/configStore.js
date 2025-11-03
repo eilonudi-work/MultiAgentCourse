@@ -7,16 +7,30 @@ import { persist } from 'zustand/middleware';
  */
 const useConfigStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       // State
-      theme: 'light', // 'light' | 'dark' | 'system'
+      theme: 'light', // 'light' | 'dark'
       temperature: 0.7,
       maxTokens: 2000,
       systemPrompt: 'You are a helpful assistant.',
       sidebarCollapsed: false,
 
       // Actions
-      setTheme: (theme) => set({ theme }),
+      setTheme: (theme) => {
+        set({ theme });
+        // Apply theme to document
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      },
+
+      toggleTheme: () => {
+        const { theme } = get();
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        get().setTheme(newTheme);
+      },
 
       setTemperature: (temperature) => set({ temperature }),
 
@@ -36,6 +50,16 @@ const useConfigStore = create(
         systemPrompt: 'You are a helpful assistant.',
         sidebarCollapsed: false,
       }),
+
+      // Initialize theme on app load
+      initializeTheme: () => {
+        const { theme } = get();
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      },
     }),
     {
       name: 'ollama-config-storage', // localStorage key

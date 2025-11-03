@@ -1,167 +1,360 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
+import useConfigStore from '../store/configStore';
+import useChatStore from '../store/chatStore';
+import useConversationStore from '../store/conversationStore';
+import chatService from '../services/chatService';
+import ConversationSidebar from '../components/ConversationSidebar';
+import ChatMessages from '../components/ChatMessages';
+import ChatInput from '../components/ChatInput';
+import ModelSelectorModal from '../components/ModelSelectorModal';
+import SettingsModal from '../components/SettingsModal';
 
 /**
- * Main chat page (placeholder for Phase 2)
+ * Main chat page with full interface
+ * Includes sidebar, chat area, and header with controls
  */
 const ChatPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, checkAuth, logout, ollamaUrl } = useAuthStore();
+  const { isAuthenticated, checkAuth, logout } = useAuthStore();
+  const {
+    theme,
+    toggleTheme,
+    sidebarCollapsed,
+    toggleSidebar,
+    systemPrompt,
+    initializeTheme,
+  } = useConfigStore();
 
+  const {
+    messages,
+    setMessages,
+    addMessage,
+    startStreaming,
+    appendStreamToken,
+    stopStreaming,
+    setError,
+    clearMessages,
+    isStreaming,
+    stopGeneration,
+  } = useChatStore();
+
+  const {
+    conversations,
+    currentConversation,
+    selectedModel,
+    setSelectedModel,
+    loadConversations,
+    createConversation,
+    selectConversation,
+    updateConversation,
+    setCurrentConversation,
+  } = useConversationStore();
+
+  const [showModelSelector, setShowModelSelector] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+
+  // Initialize theme on mount
   useEffect(() => {
-    // Check authentication on mount
+    initializeTheme();
+  }, []);
+
+  // Check authentication on mount
+  useEffect(() => {
     if (!checkAuth()) {
       navigate('/setup');
+    } else {
+      // Load conversations on mount
+      loadConversations();
+      // Set default model if none selected
+      if (!selectedModel) {
+        setSelectedModel('llama2');
+      }
     }
   }, [checkAuth, navigate]);
 
+  // Handle conversation selection
+  const handleSelectConversation = async (conversationId) => {
+    setIsLoadingMessages(true);
+    try {
+      const conversation = await selectConversation(conversationId);
+      // Load messages into chat store
+      setMessages(conversation.messages || []);
+    } catch (error) {
+      console.error('Failed to load conversation:', error);
+      setError(error.message);
+    } finally {
+      setIsLoadingMessages(false);
+    }
+  };
+
+  // Handle new chat
+  const handleNewChat = async () => {
+    try {
+      const conversation = await createConversation({
+        title: 'New Chat',
+        model_name: selectedModel || 'llama2',
+        system_prompt: systemPrompt,
+      });
+      clearMessages();
+      setCurrentConversation(conversation);
+    } catch (error) {
+      console.error('Failed to create conversation:', error);
+      setError(error.message);
+    }
+  };
+
+  // Handle send message
+  const handleSendMessage = async (content) => {
+    if (!content.trim() || isStreaming) return;
+
+    // Ensure we have a conversation
+    let conversation = currentConversation;
+    if (!conversation) {
+      try {
+        conversation = await createConversation({
+          title: content.substring(0, 50),
+          model_name: selectedModel || 'llama2',
+          system_prompt: systemPrompt,
+        });
+      } catch (error) {
+        console.error('Failed to create conversation:', error);
+        setError(error.message);
+        return;
+      }
+    }
+
+    // Add user message
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content,
+      timestamp: new Date().toISOString(),
+    };
+    addMessage(userMessage);
+
+    // Create placeholder for assistant message
+    const assistantMessageId = `assistant-${Date.now()}`;
+    const assistantMessage = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date().toISOString(),
+      isStreaming: true,
+    };
+    addMessage(assistantMessage);
+
+    // Start streaming
+    startStreaming(assistantMessageId);
+
+    // Stream the response
+    try {
+      const stream = await chatService.streamMessage(
+        {
+          conversation_id: conversation.id,
+          message: content,
+          model_name: selectedModel || 'llama2',
+          system_prompt: systemPrompt,
+        },
+        // onToken callback
+        (token) => {
+          appendStreamToken(token);
+        },
+        // onComplete callback
+        (data) => {
+          stopStreaming(data);
+          // Update conversation title if it's the first message
+          if (messages.length === 0 && conversation) {
+            updateConversation(conversation.id, {
+              title: content.substring(0, 50),
+            });
+          }
+        },
+        // onError callback
+        (error) => {
+          console.error('Streaming error:', error);
+          setError(error.message);
+          stopStreaming();
+        }
+      );
+
+      // Store EventSource for potential cancellation
+      if (stream) {
+        useChatStore.setState({ eventSource: stream.eventSource });
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setError(error.message);
+      stopStreaming();
+    }
+  };
+
+  // Handle model selection
+  const handleModelSelect = (model) => {
+    setSelectedModel(model);
+    // Update current conversation model if exists
+    if (currentConversation) {
+      updateConversation(currentConversation.id, { model_name: model });
+    }
+  };
+
+  // Handle logout
   const handleLogout = () => {
     logout();
     navigate('/setup');
   };
 
-  const handleReconfigure = () => {
-    navigate('/setup');
-  };
-
   if (!isAuthenticated) {
-    return null; // Will redirect
+    return null;
   }
 
   return (
-    <div className="min-h-screen bg-bg-primary">
+    <div className="h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors">
       {/* Header */}
-      <header className="bg-white border-b border-border-color">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 z-10">
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Left: Menu toggle and title */}
           <div className="flex items-center gap-3">
-            <div className="text-2xl">🤖</div>
-            <div>
-              <h1 className="text-xl font-semibold text-text-primary">
+            <button
+              onClick={toggleSidebar}
+              className="btn-icon lg:hidden"
+              aria-label="Toggle sidebar"
+              title="Toggle sidebar"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            <div className="hidden lg:block">
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Ollama Web GUI
               </h1>
-              <p className="text-xs text-text-tertiary">
-                Phase 1 - Setup Complete
-              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+
+          {/* Center: Model selector and conversation title */}
+          <div className="flex items-center gap-2 flex-1 justify-center max-w-md">
             <button
-              onClick={handleReconfigure}
-              className="btn-secondary text-sm"
-              aria-label="Reconfigure settings"
+              onClick={() => setShowModelSelector(true)}
+              className="btn-secondary text-sm flex items-center gap-2"
+              aria-label="Select model"
+              title="Select AI model"
             >
-              ⚙️ Settings
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span className="hidden sm:inline">{selectedModel || 'Select Model'}</span>
             </button>
+
+            {currentConversation && (
+              <span className="text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs hidden md:inline">
+                {currentConversation.title}
+              </span>
+            )}
+          </div>
+
+          {/* Right: Controls */}
+          <div className="flex items-center gap-2">
+            {/* Stop generation button */}
+            {isStreaming && (
+              <button
+                onClick={stopGeneration}
+                className="btn-secondary text-sm flex items-center gap-2 text-red-600 dark:text-red-400 border-red-300 dark:border-red-700"
+                aria-label="Stop generation"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <rect x="6" y="6" width="12" height="12" />
+                </svg>
+                <span className="hidden sm:inline">Stop</span>
+              </button>
+            )}
+
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="btn-icon"
+              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme === 'light' ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              )}
+            </button>
+
+            {/* Settings */}
+            <button
+              onClick={() => setShowSettings(true)}
+              className="btn-icon"
+              aria-label="Settings"
+              title="Settings"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+
+            {/* Logout */}
             <button
               onClick={handleLogout}
-              className="btn-secondary text-sm"
+              className="btn-icon"
               aria-label="Logout"
+              title="Logout"
             >
-              🚪 Logout
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center">
-          <div className="text-6xl mb-6">🎉</div>
-          <h2 className="text-3xl font-bold text-text-primary mb-4">
-            Setup Complete!
-          </h2>
-          <p className="text-lg text-text-secondary mb-8">
-            Phase 1 foundation is ready. Chat interface coming in Phase 2.
-          </p>
+      {/* Main content area */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Sidebar */}
+        {!sidebarCollapsed && (
+          <ConversationSidebar
+            onSelectConversation={handleSelectConversation}
+            onNewChat={handleNewChat}
+          />
+        )}
 
-          {/* Success Card */}
-          <div className="bg-green-50 border border-green-200 rounded-xl p-8 max-w-2xl mx-auto mb-8">
-            <div className="flex items-start gap-4">
-              <div className="text-3xl">✓</div>
-              <div className="flex-1 text-left">
-                <h3 className="text-lg font-semibold text-green-800 mb-3">
-                  Configuration Saved Successfully
-                </h3>
-                <ul className="space-y-2 text-sm text-green-700">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">●</span>
-                    <span>API key securely stored</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">●</span>
-                    <span>Ollama URL configured: <code className="bg-white px-2 py-1 rounded text-xs">{ollamaUrl}</code></span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-600">●</span>
-                    <span>Backend connection verified</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* What's Next Section */}
-          <div className="bg-white border border-border-color rounded-xl p-8 max-w-2xl mx-auto">
-            <h3 className="text-xl font-semibold text-text-primary mb-4">
-              What's Next in Phase 2?
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">💬</span>
-                <div>
-                  <h4 className="font-medium text-text-primary text-sm">Chat Interface</h4>
-                  <p className="text-xs text-text-secondary">Full messaging with AI models</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">⚡</span>
-                <div>
-                  <h4 className="font-medium text-text-primary text-sm">Real-time Streaming</h4>
-                  <p className="text-xs text-text-secondary">Live response generation</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">📝</span>
-                <div>
-                  <h4 className="font-medium text-text-primary text-sm">Markdown Support</h4>
-                  <p className="text-xs text-text-secondary">Code highlighting & formatting</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">💾</span>
-                <div>
-                  <h4 className="font-medium text-text-primary text-sm">Chat History</h4>
-                  <p className="text-xs text-text-secondary">Save & manage conversations</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🎨</span>
-                <div>
-                  <h4 className="font-medium text-text-primary text-sm">Model Selection</h4>
-                  <p className="text-xs text-text-secondary">Choose from available models</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🌙</span>
-                <div>
-                  <h4 className="font-medium text-text-primary text-sm">Dark Mode</h4>
-                  <p className="text-xs text-text-secondary">Theme customization</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Chat area */}
+        <div className="flex-1 flex flex-col">
+          <ChatMessages
+            messages={messages}
+            isStreaming={isStreaming}
+            isLoading={isLoadingMessages}
+          />
+          <ChatInput
+            onSend={handleSendMessage}
+            disabled={isStreaming}
+            placeholder="Type your message..."
+          />
         </div>
-      </main>
+      </div>
 
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-border-color py-3">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-xs text-text-tertiary">
-            Powered by Ollama • Built with React + Vite + Tailwind CSS
-          </p>
-        </div>
-      </footer>
+      {/* Modals */}
+      <ModelSelectorModal
+        isOpen={showModelSelector}
+        onClose={() => setShowModelSelector(false)}
+        currentModel={selectedModel}
+        onSelectModel={handleModelSelect}
+      />
+
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
     </div>
   );
 };

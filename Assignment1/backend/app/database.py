@@ -1,6 +1,6 @@
 """Database setup and session management."""
 import logging
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, Index
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.config import settings
@@ -25,8 +25,9 @@ def set_sqlite_pragma(dbapi_conn, connection_record):
         cursor.execute("PRAGMA synchronous=NORMAL")
         cursor.execute("PRAGMA cache_size=-64000")  # 64MB cache
         cursor.execute("PRAGMA busy_timeout=5000")  # 5 second timeout
+        cursor.execute("PRAGMA temp_store=MEMORY")  # Use memory for temp tables
         cursor.close()
-        logger.info("SQLite WAL mode enabled")
+        logger.info("SQLite WAL mode and optimizations enabled")
 
 
 # Create SessionLocal class
@@ -48,8 +49,63 @@ def get_db():
         db.close()
 
 
+def create_indexes():
+    """
+    Create additional database indexes for performance optimization.
+
+    This is called after initial table creation to add indexes that
+    improve query performance for common operations.
+    """
+    from sqlalchemy import inspect
+
+    inspector = inspect(engine)
+
+    # Check if indexes already exist
+    existing_indexes = set()
+    for table_name in inspector.get_table_names():
+        for index in inspector.get_indexes(table_name):
+            existing_indexes.add(index['name'])
+
+    # Define indexes to create
+    indexes_to_create = [
+        # Conversations indexes
+        ("idx_conversations_user_updated", "conversations", ["user_id", "updated_at"]),
+        ("idx_conversations_updated_at", "conversations", ["updated_at"]),
+
+        # Messages indexes
+        ("idx_messages_conversation_created", "messages", ["conversation_id", "created_at"]),
+        ("idx_messages_created_at", "messages", ["created_at"]),
+        ("idx_messages_role", "messages", ["role"]),
+
+        # Settings indexes
+        ("idx_settings_user_key", "settings", ["user_id", "key"]),
+    ]
+
+    # Create indexes if they don't exist
+    with engine.connect() as conn:
+        for index_name, table_name, columns in indexes_to_create:
+            if index_name not in existing_indexes:
+                try:
+                    column_list = ", ".join(columns)
+                    create_index_sql = f"CREATE INDEX IF NOT EXISTS {index_name} ON {table_name} ({column_list})"
+                    conn.execute(create_index_sql)
+                    conn.commit()
+                    logger.info(f"Created index: {index_name}")
+                except Exception as e:
+                    logger.warning(f"Failed to create index {index_name}: {e}")
+
+    logger.info("Database indexes creation completed")
+
+
 def init_db():
-    """Initialize database tables."""
+    """Initialize database tables and indexes."""
     logger.info("Initializing database...")
+
+    # Create all tables
     Base.metadata.create_all(bind=engine)
-    logger.info("Database initialized successfully")
+    logger.info("Database tables created successfully")
+
+    # Create indexes for optimization
+    create_indexes()
+
+    logger.info("Database initialization completed")

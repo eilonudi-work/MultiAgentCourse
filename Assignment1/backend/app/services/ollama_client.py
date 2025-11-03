@@ -2,7 +2,8 @@
 import httpx
 import logging
 import asyncio
-from typing import List, Dict, Any, Optional
+import json
+from typing import List, Dict, Any, Optional, AsyncIterator
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ class OllamaClient:
         self.base_url = (base_url or settings.OLLAMA_URL).rstrip("/")
         self.client = httpx.AsyncClient(
             base_url=self.base_url,
-            timeout=httpx.Timeout(30.0, connect=5.0),
+            timeout=httpx.Timeout(120.0, connect=5.0),  # Longer timeout for streaming
             limits=httpx.Limits(max_keepalive_connections=5, max_connections=10),
         )
         logger.info(f"Ollama client initialized with base_url: {self.base_url}")
@@ -108,10 +109,23 @@ class OllamaClient:
             Model information dictionary or None if not found
         """
         try:
-            models = await self.list_models()
-            for model in models:
-                if model.get("name") == model_name or model.get("model") == model_name:
-                    return model
+            # Use the /api/show endpoint for detailed model info
+            response = await self.client.post(
+                "/api/show",
+                json={"name": model_name}
+            )
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPError as e:
+            logger.warning(f"Model info request failed for {model_name}: {e}")
+            # Fallback to listing models
+            try:
+                models = await self.list_models()
+                for model in models:
+                    if model.get("name") == model_name or model.get("model") == model_name:
+                        return model
+            except Exception:
+                pass
             logger.warning(f"Model not found: {model_name}")
             return None
         except Exception as e:
@@ -126,6 +140,122 @@ class OllamaClient:
             True if available, False otherwise
         """
         return await self.test_connection()
+
+    async def stream_generate(
+        self,
+        model: str,
+        prompt: str,
+        system: Optional[str] = None,
+        temperature: float = 0.7,
+        context: Optional[List[int]] = None,
+    ) -> AsyncIterator[Dict[str, Any]]:
+        """
+        Stream text generation from Ollama.
+
+        Args:
+            model: Model name
+            prompt: User prompt
+            system: Optional system prompt
+            temperature: Temperature for generation (0.0-2.0)
+            context: Optional context from previous generation
+
+        Yields:
+            Dictionary with streaming response chunks
+
+        Raises:
+            Exception: If streaming fails
+        """
+        payload = {
+            "model": model,
+            "prompt": prompt,
+            "stream": True,
+            "options": {
+                "temperature": temperature,
+            },
+        }
+
+        if system:
+            payload["system"] = system
+
+        if context:
+            payload["context"] = context
+
+        logger.info(f"Starting stream generation with model: {model}")
+
+        try:
+            async with self.client.stream(
+                "POST", "/api/generate", json=payload
+            ) as response:
+                response.raise_for_status()
+
+                async for line in response.aiter_lines():
+                    if line.strip():
+                        try:
+                            chunk = json.loads(line)
+                            yield chunk
+                        except json.JSONDecodeError as e:
+                            logger.warning(f"Failed to decode JSON chunk: {e}")
+                            continue
+
+        except httpx.HTTPError as e:
+            logger.error(f"HTTP error during streaming: {e}")
+            raise Exception(f"Ollama streaming failed: {str(e)}")
+        except Exception as e:
+            logger.error(f"Unexpected error during streaming: {e}")
+            raise Exception(f"Streaming error: {str(e)}")
+
+    async def stream_chat(
+        self,
+        model: str,
+        messages: List[Dict[str, str]],
+        temperature: float = 0.7,
+    ) -> AsyncIterator[Dict[str, Any]]:
+        """
+        Stream chat completion from Ollama.
+
+        Args:
+            model: Model name
+            messages: List of message dictionaries with 'role' and 'content'
+            temperature: Temperature for generation (0.0-2.0)
+
+        Yields:
+            Dictionary with streaming response chunks
+
+        Raises:
+            Exception: If streaming fails
+        """
+        payload = {
+            "model": model,
+            "messages": messages,
+            "stream": True,
+            "options": {
+                "temperature": temperature,
+            },
+        }
+
+        logger.info(f"Starting stream chat with model: {model}, messages: {len(messages)}")
+
+        try:
+            async with self.client.stream(
+                "POST", "/api/chat", json=payload
+            ) as response:
+                response.raise_for_status()
+
+                async for line in response.aiter_lines():
+                    if line.strip():
+                        try:
+                            chunk = json.loads(line)
+                            yield chunk
+                        except json.JSONDecodeError as e:
+                            logger.warning(f"Failed to decode JSON chunk: {e}")
+                            continue
+
+        except httpx.HTTPError as e:
+            logger.error(f"HTTP error during chat streaming: {e}")
+            raise Exception(f"Ollama chat streaming failed: {str(e)}")
+        except Exception as e:
+            logger.error(f"Unexpected error during chat streaming: {e}")
+            raise Exception(f"Chat streaming error: {str(e)}")
 
 
 # Singleton instance
