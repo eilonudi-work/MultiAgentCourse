@@ -1,5 +1,5 @@
 """Export/Import related schemas."""
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 
@@ -16,6 +16,8 @@ class ExportMessageSchema(BaseModel):
 class ExportConversationSchema(BaseModel):
     """Schema for exported conversation in JSON format."""
 
+    model_config = ConfigDict(protected_namespaces=())
+
     id: int
     title: Optional[str]
     model_name: str
@@ -29,6 +31,8 @@ class ExportConversationSchema(BaseModel):
 
 class ImportConversationRequest(BaseModel):
     """Request schema for importing a conversation."""
+
+    model_config = ConfigDict(protected_namespaces=())
 
     title: Optional[str] = Field(None, max_length=200)
     model_name: str = Field(..., min_length=1)

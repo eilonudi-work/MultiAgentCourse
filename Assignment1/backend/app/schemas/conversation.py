@@ -1,11 +1,13 @@
 """Conversation-related schemas."""
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 
 
 class ConversationCreate(BaseModel):
     """Request schema for creating a new conversation."""
+
+    model_config = ConfigDict(protected_namespaces=())
 
     title: Optional[str] = Field(None, max_length=200, description="Conversation title")
     model_name: str = Field(..., min_length=1, description="Name of the LLM model to use")
@@ -21,6 +23,8 @@ class ConversationCreate(BaseModel):
 
 class ConversationUpdate(BaseModel):
     """Request schema for updating a conversation."""
+
+    model_config = ConfigDict(protected_namespaces=())
 
     title: Optional[str] = Field(None, max_length=200, description="Updated conversation title")
     model_name: Optional[str] = Field(None, min_length=1, description="Updated model name")
@@ -51,6 +55,8 @@ class MessageResponse(BaseModel):
 class ConversationResponse(BaseModel):
     """Response schema for a conversation without messages."""
 
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+
     id: int
     user_id: int
     title: Optional[str]
@@ -60,12 +66,11 @@ class ConversationResponse(BaseModel):
     updated_at: datetime
     message_count: Optional[int] = 0
 
-    class Config:
-        from_attributes = True
-
 
 class ConversationDetailResponse(BaseModel):
     """Response schema for a conversation with messages."""
+
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
     id: int
     user_id: int
@@ -75,9 +80,6 @@ class ConversationDetailResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     messages: List[MessageResponse] = []
-
-    class Config:
-        from_attributes = True
 
 
 class ConversationListResponse(BaseModel):

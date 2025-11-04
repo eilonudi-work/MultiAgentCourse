@@ -235,6 +235,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         Returns:
             Response or rate limit error
         """
+        # Exempt certain paths from rate limiting
+        exempt_paths = ["/health", "/", "/docs", "/openapi.json", "/redoc"]
+        if request.url.path in exempt_paths:
+            return await call_next(request)
+
         # Get identifier and rate limit type
         identifier = self._get_identifier(request)
         rate_limit_type = self._get_rate_limit_type(request.url.path)

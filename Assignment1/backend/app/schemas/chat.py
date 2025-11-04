@@ -1,5 +1,5 @@
 """Chat-related schemas."""
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, ConfigDict
 from typing import Optional, List
 
 
@@ -19,6 +19,8 @@ class ChatMessage(BaseModel):
 
 class ChatStreamRequest(BaseModel):
     """Request schema for streaming chat."""
+
+    model_config = ConfigDict(protected_namespaces=())
 
     conversation_id: Optional[int] = Field(None, description="Existing conversation ID (optional for new chat)")
     message: str = Field(..., min_length=1, max_length=10000, description="User message")
@@ -44,6 +46,8 @@ class ChatStreamRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     """Response schema for non-streaming chat."""
+
+    model_config = ConfigDict(protected_namespaces=())
 
     conversation_id: int
     message_id: int

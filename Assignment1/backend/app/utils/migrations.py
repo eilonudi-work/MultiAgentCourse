@@ -232,41 +232,62 @@ def migration_001_add_session_fields_up(db: Session) -> None:
     inspector = inspect(engine)
     columns = [col["name"] for col in inspector.get_columns("users")]
 
+    # SQLite doesn't support DEFAULT with CURRENT_TIMESTAMP in ALTER TABLE
+    # We need to add columns without defaults, then update existing rows
+
     # Add columns if they don't exist
     if "last_activity" not in columns:
         db.execute(text(
-            "ALTER TABLE users ADD COLUMN last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+            "ALTER TABLE users ADD COLUMN last_activity TIMESTAMP"
         ))
+        db.execute(text(
+            "UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE last_activity IS NULL"
+        ))
+        db.commit()
         logger.info("Added last_activity column")
 
     if "session_expires_at" not in columns:
         db.execute(text(
-            "ALTER TABLE users ADD COLUMN session_expires_at TIMESTAMP NULL"
+            "ALTER TABLE users ADD COLUMN session_expires_at TIMESTAMP"
         ))
+        db.commit()
         logger.info("Added session_expires_at column")
 
     if "is_active" not in columns:
         db.execute(text(
-            "ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT 1"
+            "ALTER TABLE users ADD COLUMN is_active INTEGER DEFAULT 1"
         ))
+        db.execute(text(
+            "UPDATE users SET is_active = 1 WHERE is_active IS NULL"
+        ))
+        db.commit()
         logger.info("Added is_active column")
 
     if "api_key_created_at" not in columns:
         db.execute(text(
-            "ALTER TABLE users ADD COLUMN api_key_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+            "ALTER TABLE users ADD COLUMN api_key_created_at TIMESTAMP"
         ))
+        db.execute(text(
+            "UPDATE users SET api_key_created_at = CURRENT_TIMESTAMP WHERE api_key_created_at IS NULL"
+        ))
+        db.commit()
         logger.info("Added api_key_created_at column")
 
     if "api_key_expires_at" not in columns:
         db.execute(text(
-            "ALTER TABLE users ADD COLUMN api_key_expires_at TIMESTAMP NULL"
+            "ALTER TABLE users ADD COLUMN api_key_expires_at TIMESTAMP"
         ))
+        db.commit()
         logger.info("Added api_key_expires_at column")
 
     if "is_admin" not in columns:
         db.execute(text(
-            "ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT 0"
+            "ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0"
         ))
+        db.execute(text(
+            "UPDATE users SET is_admin = 0 WHERE is_admin IS NULL"
+        ))
+        db.commit()
         logger.info("Added is_admin column")
 
 

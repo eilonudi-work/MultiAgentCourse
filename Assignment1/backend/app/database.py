@@ -88,7 +88,7 @@ def create_indexes():
                 try:
                     column_list = ", ".join(columns)
                     create_index_sql = f"CREATE INDEX IF NOT EXISTS {index_name} ON {table_name} ({column_list})"
-                    conn.execute(create_index_sql)
+                    conn.execute(text(create_index_sql))
                     conn.commit()
                     logger.info(f"Created index: {index_name}")
                 except Exception as e:
