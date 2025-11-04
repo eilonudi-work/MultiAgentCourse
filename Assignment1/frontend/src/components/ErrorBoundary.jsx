@@ -3,6 +3,7 @@ import { Component } from 'react';
 /**
  * Error Boundary Component
  * Catches JavaScript errors anywhere in the child component tree
+ * Enhanced with accessibility and better error handling
  */
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -22,6 +23,13 @@ class ErrorBoundary extends Component {
   componentDidCatch(error, errorInfo) {
     // Log error details
     console.error('Error caught by boundary:', error, errorInfo);
+
+    // Log to external error tracking service in production
+    if (!import.meta.env.DEV) {
+      // TODO: Send to error tracking service (e.g., Sentry)
+      // logErrorToService(error, errorInfo);
+    }
+
     this.setState({
       error,
       errorInfo,
@@ -41,11 +49,24 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-bg-secondary flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full p-8">
+        <div
+          className="min-h-screen bg-bg-secondary flex items-center justify-center p-4"
+          role="alert"
+          aria-live="assertive"
+        >
+          <div className="bg-bg-primary dark:bg-gray-800 rounded-xl shadow-lg max-w-2xl w-full p-8 border border-border-color">
             <div className="text-center mb-6">
-              <div className="text-6xl mb-4">😕</div>
-              <h1 className="text-2xl font-bold text-text-primary mb-2">
+              <div
+                className="text-6xl mb-4"
+                role="img"
+                aria-label="Error icon"
+              >
+                😕
+              </div>
+              <h1
+                className="text-2xl font-bold text-text-primary mb-2"
+                id="error-title"
+              >
                 Oops! Something went wrong
               </h1>
               <p className="text-text-secondary">
@@ -55,11 +76,11 @@ class ErrorBoundary extends Component {
 
             {/* Error details (in development) */}
             {import.meta.env.DEV && this.state.error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <h3 className="text-sm font-semibold text-red-800 mb-2">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+                <h3 className="text-sm font-semibold text-red-800 dark:text-red-300 mb-2">
                   Error Details (Development Mode)
                 </h3>
-                <pre className="text-xs text-red-700 overflow-auto max-h-48 whitespace-pre-wrap">
+                <pre className="text-xs text-red-700 dark:text-red-400 overflow-auto max-h-48 whitespace-pre-wrap break-words">
                   {this.state.error.toString()}
                   {this.state.errorInfo && this.state.errorInfo.componentStack}
                 </pre>
@@ -67,10 +88,11 @@ class ErrorBoundary extends Component {
             )}
 
             {/* Action buttons */}
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-3 justify-center flex-wrap">
               <button
                 onClick={this.handleReset}
                 className="btn-primary"
+                aria-describedby="error-title"
               >
                 Return to Home
               </button>

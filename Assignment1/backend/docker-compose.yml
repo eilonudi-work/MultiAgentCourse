@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ollama-web-backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Database
+      - DATABASE_URL=sqlite:///./data/ollama_web.db
+
+      # Ollama
+      - OLLAMA_URL=http://host.docker.internal:11434
+
+      # Security
+      - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
+
+      # CORS
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - STRUCTURED_LOGGING=${STRUCTURED_LOGGING:-false}
+
+      # Session Settings
+      - SESSION_TIMEOUT_MINUTES=${SESSION_TIMEOUT_MINUTES:-60}
+      - API_KEY_EXPIRY_DAYS=${API_KEY_EXPIRY_DAYS:-0}
+
+      # Rate Limiting
+      - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-true}
+      - RATE_LIMIT_PER_MINUTE=${RATE_LIMIT_PER_MINUTE:-100}
+
+      # Security
+      - CSRF_PROTECTION_ENABLED=${CSRF_PROTECTION_ENABLED:-true}
+      - SECURITY_HEADERS_ENABLED=${SECURITY_HEADERS_ENABLED:-true}
+
+      # Backup
+      - BACKUP_ENABLED=${BACKUP_ENABLED:-true}
+      - BACKUP_DIRECTORY=/app/backups
+      - BACKUP_RETENTION_DAYS=${BACKUP_RETENTION_DAYS:-30}
+
+      # Monitoring
+      - METRICS_ENABLED=${METRICS_ENABLED:-true}
+
+    volumes:
+      # Persist database and backups
+      - ./data:/app/data
+      - ./backups:/app/backups
+      - ./logs:/app/logs
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    networks:
+      - ollama-network
+
+networks:
+  ollama-network:
+    driver: bridge
+
+volumes:
+  data:
+  backups:
+  logs:

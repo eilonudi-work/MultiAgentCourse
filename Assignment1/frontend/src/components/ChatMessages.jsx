@@ -1,37 +1,39 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, memo } from 'react';
 import MessageBubble from './MessageBubble';
 import LoadingSpinner from './LoadingSpinner';
 
 /**
  * ChatMessages component
  * Displays message list with auto-scroll and virtual scrolling for performance
+ * Optimized with React.memo and useCallback for better performance
  */
-const ChatMessages = ({ messages, isStreaming, isLoading }) => {
+const ChatMessages = memo(({ messages, isStreaming, isLoading }) => {
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isNearBottom, setIsNearBottom] = useState(true);
+
+  // Memoized scroll function
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (isNearBottom) {
       scrollToBottom();
     }
-  }, [messages, isNearBottom]);
+  }, [messages, isNearBottom, scrollToBottom]);
 
   // Always scroll when streaming starts or updates
   useEffect(() => {
     if (isStreaming) {
       scrollToBottom();
     }
-  }, [isStreaming]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, [isStreaming, scrollToBottom]);
 
   // Handle scroll events to show/hide scroll button
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (!containerRef.current) return;
 
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -41,7 +43,7 @@ const ChatMessages = ({ messages, isStreaming, isLoading }) => {
     setShowScrollButton(distanceFromBottom > 200);
     // Track if user is near bottom
     setIsNearBottom(distanceFromBottom < 100);
-  };
+  }, []);
 
   // Empty state
   if (!isLoading && messages.length === 0) {
@@ -118,6 +120,8 @@ const ChatMessages = ({ messages, isStreaming, isLoading }) => {
       )}
     </div>
   );
-};
+});
+
+ChatMessages.displayName = 'ChatMessages';
 
 export default ChatMessages;

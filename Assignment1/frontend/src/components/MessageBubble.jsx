@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
@@ -48,18 +48,16 @@ configureMarked();
 /**
  * MessageBubble component
  * Displays a single message with markdown rendering and syntax highlighting
+ * Optimized with React.memo and useMemo for better performance
  */
-const MessageBubble = ({ message, isStreaming = false }) => {
-  const [renderedContent, setRenderedContent] = useState('');
+const MessageBubble = memo(({ message, isStreaming = false }) => {
   const isUser = message.role === 'user';
 
-  useEffect(() => {
-    // Render markdown
-    if (message.content) {
-      const html = marked.parse(message.content);
-      setRenderedContent(html);
-    }
-  }, [message.content]);
+  // Memoize rendered markdown content
+  const renderedContent = useMemo(() => {
+    if (!message.content || isUser) return '';
+    return marked.parse(message.content);
+  }, [message.content, isUser]);
 
   // Handle copy button clicks
   useEffect(() => {
@@ -132,6 +130,8 @@ const MessageBubble = ({ message, isStreaming = false }) => {
       </div>
     </div>
   );
-};
+});
+
+MessageBubble.displayName = 'MessageBubble';
 
 export default MessageBubble;
