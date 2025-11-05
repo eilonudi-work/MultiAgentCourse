@@ -93,9 +93,40 @@ if ! command_exists npm; then
 fi
 print_success "npm found: $(npm --version)"
 
-# Check Ollama
+# Check and install Ollama if needed
 if ! command_exists ollama; then
-    print_warning "Ollama CLI not found. Make sure Ollama is installed and running."
+    print_warning "Ollama CLI not found. Installing Ollama..."
+
+    # Detect OS and install accordingly
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS - check if brew is available
+        if command_exists brew; then
+            print_info "Installing Ollama via Homebrew..."
+            if brew install ollama; then
+                print_success "Ollama installed successfully"
+            else
+                print_error "Failed to install Ollama via Homebrew"
+                print_info "Please install manually from: https://ollama.ai/download"
+                exit 1
+            fi
+        else
+            print_error "Homebrew not found. Please install Ollama manually from: https://ollama.ai/download"
+            exit 1
+        fi
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # Linux
+        print_info "Installing Ollama via install script..."
+        if curl -fsSL https://ollama.ai/install.sh | sh; then
+            print_success "Ollama installed successfully"
+        else
+            print_error "Failed to install Ollama"
+            print_info "Please install manually from: https://ollama.ai/download"
+            exit 1
+        fi
+    else
+        print_error "Unsupported operating system. Please install Ollama manually from: https://ollama.ai/download"
+        exit 1
+    fi
 else
     print_success "Ollama found: $(ollama --version 2>&1 | head -n 1)"
 fi
@@ -115,15 +146,63 @@ if port_in_use 5173; then
 fi
 print_success "Port 5173 is available (frontend)"
 
-# 3. Check if Ollama is running
+# 3. Check if Ollama is running and start if needed
 print_info "Checking Ollama service..."
 
 if curl -s http://localhost:11434/api/tags >/dev/null 2>&1; then
     print_success "Ollama is running on port 11434"
 else
-    print_warning "Ollama doesn't seem to be running on port 11434"
-    print_warning "Please start Ollama: ollama serve"
-    print_info "Continuing anyway..."
+    print_warning "Ollama service is not running. Starting Ollama..."
+
+    # Start Ollama in background
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS - use brew services or start manually
+        if command_exists brew; then
+            brew services start ollama 2>/dev/null || ollama serve > /dev/null 2>&1 &
+        else
+            ollama serve > /dev/null 2>&1 &
+        fi
+    else
+        # Linux - start manually
+        ollama serve > /dev/null 2>&1 &
+    fi
+
+    # Wait for Ollama to start (max 10 seconds)
+    print_info "Waiting for Ollama to start..."
+    for i in {1..10}; do
+        if curl -s http://localhost:11434/api/tags >/dev/null 2>&1; then
+            print_success "Ollama started successfully"
+            break
+        fi
+        sleep 1
+    done
+
+    # Check if it started
+    if ! curl -s http://localhost:11434/api/tags >/dev/null 2>&1; then
+        print_error "Failed to start Ollama service"
+        print_info "Please start manually: ollama serve"
+        exit 1
+    fi
+fi
+
+# 3.1 Check and pull required model
+REQUIRED_MODEL="llama3.2:1b"
+print_info "Checking for required model: $REQUIRED_MODEL..."
+
+# Get list of models
+if curl -s http://localhost:11434/api/tags | grep -q "\"name\":\"$REQUIRED_MODEL\""; then
+    print_success "Model $REQUIRED_MODEL is already available"
+else
+    print_warning "Model $REQUIRED_MODEL not found. Pulling model..."
+    print_info "This may take several minutes depending on your internet connection..."
+
+    if ollama pull "$REQUIRED_MODEL"; then
+        print_success "Model $REQUIRED_MODEL pulled successfully"
+    else
+        print_error "Failed to pull model $REQUIRED_MODEL"
+        print_info "You can pull it manually later: ollama pull $REQUIRED_MODEL"
+        print_warning "Continuing without the model (chat may not work until model is available)"
+    fi
 fi
 
 # 4. Setup backend

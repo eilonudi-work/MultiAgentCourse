@@ -38,27 +38,59 @@ const chatService = {
 
       const eventSource = new EventSource(url);
 
-      // Handle incoming messages
-      eventSource.onmessage = (event) => {
+      // Handle conversation created event
+      eventSource.addEventListener('conversation_created', (event) => {
         try {
           const data = JSON.parse(event.data);
-
-          if (data.type === 'token') {
-            // Streaming token
-            onToken(data.content);
-          } else if (data.type === 'done') {
-            // Stream complete
-            eventSource.close();
-            onComplete(data);
-          } else if (data.type === 'error') {
-            // Error during streaming
-            eventSource.close();
-            onError(new Error(data.message || 'Streaming error occurred'));
-          }
+          console.log('Conversation created:', data.conversation_id);
         } catch (parseError) {
-          console.error('Failed to parse SSE data:', parseError);
+          console.error('Failed to parse conversation_created event:', parseError);
         }
-      };
+      });
+
+      // Handle message created event
+      eventSource.addEventListener('message_created', (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log('Message created:', data.message_id);
+        } catch (parseError) {
+          console.error('Failed to parse message_created event:', parseError);
+        }
+      });
+
+      // Handle streaming tokens
+      eventSource.addEventListener('token', (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          onToken(data.content);
+        } catch (parseError) {
+          console.error('Failed to parse token event:', parseError);
+        }
+      });
+
+      // Handle completion
+      eventSource.addEventListener('done', (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          eventSource.close();
+          onComplete(data);
+        } catch (parseError) {
+          console.error('Failed to parse done event:', parseError);
+          eventSource.close();
+          onComplete({});
+        }
+      });
+
+      // Handle errors
+      eventSource.addEventListener('error', (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          eventSource.close();
+          onError(new Error(data.error || 'Streaming error occurred'));
+        } catch (parseError) {
+          console.error('Failed to parse error event:', parseError);
+        }
+      });
 
       // Handle connection errors
       eventSource.onerror = (error) => {

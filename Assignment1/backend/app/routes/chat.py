@@ -200,14 +200,14 @@ async def stream_chat_response(
 
 
 @router.post("/stream")
-async def stream_chat(
+async def stream_chat_post(
     request: ChatStreamRequest,
     req: Request,
     user: User = Depends(require_auth),
     db: Session = Depends(get_db),
 ):
     """
-    Stream chat responses using Server-Sent Events (SSE).
+    Stream chat responses using Server-Sent Events (SSE) - POST version.
 
     This endpoint creates a new conversation or continues an existing one,
     streams the LLM response token-by-token, and saves messages to the database.
@@ -228,6 +228,61 @@ async def stream_chat(
         - done: Emitted when streaming is complete
         - error: Emitted on errors
     """
+    return StreamingResponse(
+        stream_chat_response(request, user, db),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",  # Disable nginx buffering
+        },
+    )
+
+
+@router.get("/stream")
+async def stream_chat_get(
+    conversation_id: Optional[int] = None,
+    message: str = "",
+    model_name: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    temperature: Optional[float] = 0.7,
+    user: User = Depends(require_auth),
+    db: Session = Depends(get_db),
+):
+    """
+    Stream chat responses using Server-Sent Events (SSE) - GET version for EventSource.
+
+    This endpoint creates a new conversation or continues an existing one,
+    streams the LLM response token-by-token, and saves messages to the database.
+
+    Args:
+        conversation_id: Optional conversation ID
+        message: User message
+        model_name: Model to use
+        system_prompt: Optional system prompt
+        temperature: Temperature for generation
+        user: Authenticated user
+        db: Database session
+
+    Returns:
+        StreamingResponse with SSE events
+
+    Event types:
+        - conversation_created: Emitted when a new conversation is created
+        - message_created: Emitted when user message is saved
+        - token: Emitted for each response token
+        - done: Emitted when streaming is complete
+        - error: Emitted on errors
+    """
+    # Create ChatStreamRequest from query parameters
+    request = ChatStreamRequest(
+        conversation_id=conversation_id,
+        message=message,
+        model_name=model_name,
+        system_prompt=system_prompt,
+        temperature=temperature,
+    )
+
     return StreamingResponse(
         stream_chat_response(request, user, db),
         media_type="text/event-stream",

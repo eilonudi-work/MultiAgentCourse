@@ -70,7 +70,7 @@ const ChatPage = () => {
       loadConversations();
       // Set default model if none selected
       if (!selectedModel) {
-        setSelectedModel('llama2');
+        setSelectedModel('llama3.2:1b');
       }
     }
   }, [checkAuth, navigate]);
@@ -95,7 +95,7 @@ const ChatPage = () => {
     try {
       const conversation = await createConversation({
         title: 'New Chat',
-        model_name: selectedModel || 'llama2',
+        model_name: selectedModel || 'llama3.2:1b',
         system_prompt: systemPrompt,
       });
       clearMessages();
@@ -116,7 +116,7 @@ const ChatPage = () => {
       try {
         conversation = await createConversation({
           title: content.substring(0, 50),
-          model_name: selectedModel || 'llama2',
+          model_name: selectedModel || 'llama3.2:1b',
           system_prompt: systemPrompt,
         });
       } catch (error) {
@@ -155,7 +155,7 @@ const ChatPage = () => {
         {
           conversation_id: conversation.id,
           message: content,
-          model_name: selectedModel || 'llama2',
+          model_name: selectedModel || 'llama3.2:1b',
           system_prompt: systemPrompt,
         },
         // onToken callback
@@ -219,7 +219,7 @@ const ChatPage = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={toggleSidebar}
-              className="btn-icon lg:hidden"
+              className="btn-icon"
               aria-label="Toggle sidebar"
               title="Toggle sidebar"
             >

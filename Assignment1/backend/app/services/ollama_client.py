@@ -251,7 +251,26 @@ class OllamaClient:
                             continue
 
         except httpx.HTTPError as e:
+            error_msg = str(e)
             logger.error(f"HTTP error during chat streaming: {e}")
+
+            # Special handling for 404 - usually means model not found
+            if "404" in error_msg:
+                try:
+                    models = await self.list_models()
+                    model_names = [m.get("name", m.get("model", "unknown")) for m in models]
+                    raise Exception(
+                        f"Model '{model}' not found. Available models: {', '.join(model_names)}. "
+                        f"Please select a valid model or pull the model using: ollama pull {model}"
+                    )
+                except Exception as list_error:
+                    # If we can't list models, fall back to generic error
+                    if "Model" in str(list_error):
+                        raise list_error
+                    raise Exception(
+                        f"Model '{model}' not found. Please check if the model exists using: ollama list"
+                    )
+
             raise Exception(f"Ollama chat streaming failed: {str(e)}")
         except Exception as e:
             logger.error(f"Unexpected error during chat streaming: {e}")

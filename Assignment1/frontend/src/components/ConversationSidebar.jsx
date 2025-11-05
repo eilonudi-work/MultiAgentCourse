@@ -223,7 +223,7 @@ const ConversationSidebar = ({ onSelectConversation, onNewChat }) => {
                   {/* Model badge and date */}
                   <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                     <span className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
-                      {conversation.model_name || 'llama2'}
+                      {conversation.model_name || 'llama3.2:1b'}
                     </span>
                     <span>{formatDate(conversation.updated_at || conversation.created_at)}</span>
                   </div>

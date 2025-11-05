@@ -48,6 +48,7 @@ class Settings(BaseModel):
     # Security
     CSRF_PROTECTION_ENABLED: bool = os.getenv("CSRF_PROTECTION_ENABLED", "true").lower() == "true"
     SECURITY_HEADERS_ENABLED: bool = os.getenv("SECURITY_HEADERS_ENABLED", "true").lower() == "true"
+    AUTH_REQUIRED: bool = os.getenv("AUTH_REQUIRED", "true").lower() == "true"
 
     # Database Backup
     BACKUP_ENABLED: bool = os.getenv("BACKUP_ENABLED", "true").lower() == "true"

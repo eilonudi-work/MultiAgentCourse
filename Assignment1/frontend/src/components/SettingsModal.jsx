@@ -21,10 +21,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
   const [templates, setTemplates] = useState([]);
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false);
   const [activeTab, setActiveTab] = useState('prompt'); // 'prompt' | 'parameters'
+  const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
       setLocalPrompt(systemPrompt);
+      setSelectedTemplateIndex(null);
       loadTemplates();
     }
   }, [isOpen, systemPrompt]);
@@ -38,10 +40,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
       console.error('Failed to load templates:', error);
       // Use fallback templates
       setTemplates([
-        { name: 'Default', content: 'You are a helpful assistant.' },
-        { name: 'Code Assistant', content: 'You are an expert programming assistant. Provide clear, concise code examples and explanations.' },
-        { name: 'Creative Writer', content: 'You are a creative writing assistant. Help with storytelling, poetry, and creative content.' },
-        { name: 'Teacher', content: 'You are a patient and knowledgeable teacher. Explain concepts clearly with examples.' },
+        { name: 'Default', prompt: 'You are a helpful assistant.' },
+        { name: 'Code Assistant', prompt: 'You are an expert programming assistant. Provide clear, concise code examples and explanations.' },
+        { name: 'Creative Writer', prompt: 'You are a creative writing assistant. Help with storytelling, poetry, and creative content.' },
+        { name: 'Teacher', prompt: 'You are a patient and knowledgeable teacher. Explain concepts clearly with examples.' },
       ]);
     } finally {
       setIsLoadingTemplates(false);
@@ -59,8 +61,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
     setSystemPrompt(defaultPrompt);
   };
 
-  const handleTemplateSelect = (template) => {
-    setLocalPrompt(template.content);
+  const handleTemplateSelect = (template, index) => {
+    setLocalPrompt(template.prompt || template.content);
+    setSelectedTemplateIndex(index);
   };
 
   if (!isOpen) return null;
@@ -140,8 +143,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
                     {templates.map((template, index) => (
                       <button
                         key={index}
-                        onClick={() => handleTemplateSelect(template)}
-                        className="btn-secondary text-left text-sm"
+                        onClick={() => handleTemplateSelect(template, index)}
+                        className={`text-left text-sm px-4 py-2 rounded-lg font-medium transition-all ${
+                          selectedTemplateIndex === index
+                            ? 'bg-blue-600 text-white border-2 border-blue-600 shadow-md'
+                            : 'btn-secondary hover:border-blue-300 dark:hover:border-blue-700'
+                        }`}
                       >
                         {template.name}
                       </button>
@@ -161,7 +168,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 <textarea
                   id="system-prompt"
                   value={localPrompt}
-                  onChange={(e) => setLocalPrompt(e.target.value)}
+                  onChange={(e) => {
+                    setLocalPrompt(e.target.value);
+                    setSelectedTemplateIndex(null); // Clear selection when manually editing
+                  }}
                   rows={10}
                   className="textarea-field w-full"
                   placeholder="Enter system prompt..."

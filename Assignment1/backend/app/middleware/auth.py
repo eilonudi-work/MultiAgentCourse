@@ -5,8 +5,9 @@ from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.utils.auth import verify_api_key
+from app.utils.auth import verify_api_key, hash_api_key
 from app.database import SessionLocal
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -90,4 +91,24 @@ async def require_auth(request: Request) -> User:
     Raises:
         HTTPException: If authentication fails
     """
+    # If authentication is disabled (development mode), get or create a default user
+    if not settings.AUTH_REQUIRED:
+        logger.info("Authentication disabled - using default user for development")
+        db: Session = SessionLocal()
+        try:
+            # Get or create default user
+            user = db.query(User).first()
+            if not user:
+                logger.info("Creating default development user")
+                user = User(
+                    api_key_hash=hash_api_key("dev-key-12345"),
+                    ollama_url=settings.OLLAMA_URL
+                )
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+            return user
+        finally:
+            db.close()
+
     return await get_current_user(request)
