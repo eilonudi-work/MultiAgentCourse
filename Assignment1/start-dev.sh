@@ -93,43 +93,17 @@ if ! command_exists npm; then
 fi
 print_success "npm found: $(npm --version)"
 
-# Check and install Ollama if needed
+# Check Ollama
 if ! command_exists ollama; then
-    print_warning "Ollama CLI not found. Installing Ollama..."
-
-    # Detect OS and install accordingly
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS - check if brew is available
-        if command_exists brew; then
-            print_info "Installing Ollama via Homebrew..."
-            if brew install ollama; then
-                print_success "Ollama installed successfully"
-            else
-                print_error "Failed to install Ollama via Homebrew"
-                print_info "Please install manually from: https://ollama.ai/download"
-                exit 1
-            fi
-        else
-            print_error "Homebrew not found. Please install Ollama manually from: https://ollama.ai/download"
-            exit 1
-        fi
-    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        # Linux
-        print_info "Installing Ollama via install script..."
-        if curl -fsSL https://ollama.ai/install.sh | sh; then
-            print_success "Ollama installed successfully"
-        else
-            print_error "Failed to install Ollama"
-            print_info "Please install manually from: https://ollama.ai/download"
-            exit 1
-        fi
-    else
-        print_error "Unsupported operating system. Please install Ollama manually from: https://ollama.ai/download"
-        exit 1
-    fi
-else
-    print_success "Ollama found: $(ollama --version 2>&1 | head -n 1)"
+    print_error "Ollama is not installed. Please install Ollama first."
+    echo ""
+    print_info "Installation instructions:"
+    print_info "  macOS: brew install ollama"
+    print_info "  Linux: curl -fsSL https://ollama.ai/install.sh | sh"
+    print_info "  Or download from: https://ollama.ai/download"
+    exit 1
 fi
+print_success "Ollama found: $(ollama --version 2>&1 | head -n 1)"
 
 # 2. Check if ports are available
 print_info "Checking ports..."
@@ -193,15 +167,28 @@ print_info "Checking for required model: $REQUIRED_MODEL..."
 if curl -s http://localhost:11434/api/tags | grep -q "\"name\":\"$REQUIRED_MODEL\""; then
     print_success "Model $REQUIRED_MODEL is already available"
 else
-    print_warning "Model $REQUIRED_MODEL not found. Pulling model..."
-    print_info "This may take several minutes depending on your internet connection..."
+    print_warning "Model $REQUIRED_MODEL not found."
+    echo ""
+    print_info "The recommended model is $REQUIRED_MODEL (~1.3GB download)."
+    echo -n "Would you like to download it now? (y/n): "
+    read -r response
 
-    if ollama pull "$REQUIRED_MODEL"; then
-        print_success "Model $REQUIRED_MODEL pulled successfully"
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        print_info "Pulling model $REQUIRED_MODEL..."
+        print_info "This may take several minutes depending on your internet connection..."
+
+        if ollama pull "$REQUIRED_MODEL"; then
+            print_success "Model $REQUIRED_MODEL pulled successfully"
+        else
+            print_error "Failed to pull model $REQUIRED_MODEL"
+            print_info "You can pull it manually later: ollama pull $REQUIRED_MODEL"
+            print_warning "Continuing without the model (chat may not work until model is available)"
+        fi
     else
-        print_error "Failed to pull model $REQUIRED_MODEL"
-        print_info "You can pull it manually later: ollama pull $REQUIRED_MODEL"
-        print_warning "Continuing without the model (chat may not work until model is available)"
+        print_warning "Skipping model download."
+        print_info "Make sure you have another model available. To list models: ollama list"
+        print_info "To pull a model manually: ollama pull <model-name>"
+        print_info "Popular options: llama2, mistral, codellama"
     fi
 fi
 

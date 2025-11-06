@@ -58,13 +58,32 @@ Ollama Web GUI provides a complete, production-ready web interface for interacti
 
 ### Prerequisites
 
-**Only Python 3.10+ and Node.js 18+ are required!**
+**You must install these three requirements first:**
 
-The startup script will automatically:
-- ✅ Install Ollama (if not present)
-- ✅ Start Ollama service
+1. **Python 3.10 or higher**
+   - macOS: `brew install python@3.10` or download from [python.org](https://www.python.org/downloads/)
+   - Linux (Ubuntu/Debian): `sudo apt update && sudo apt install python3.10 python3.10-venv python3-pip`
+   - Linux (Fedora): `sudo dnf install python3.10`
+   - Windows: Download from [python.org](https://www.python.org/downloads/)
+   - Verify: `python3 --version` (should show 3.10+)
+
+2. **Node.js 18 or higher**
+   - macOS: `brew install node` or download from [nodejs.org](https://nodejs.org/)
+   - Linux (Ubuntu/Debian): `curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt install -y nodejs`
+   - Linux (Fedora): `sudo dnf install nodejs`
+   - Windows: Download from [nodejs.org](https://nodejs.org/)
+   - Verify: `node --version` (should show v18+) and `npm --version`
+
+3. **Ollama**
+   - macOS: `brew install ollama` or download from [ollama.ai/download](https://ollama.ai/download)
+   - Linux: `curl -fsSL https://ollama.ai/install.sh | sh`
+   - Windows: Download from [ollama.ai/download](https://ollama.ai/download)
+   - Verify: `ollama --version`
+
+The startup script will then automatically:
+- ✅ Start Ollama service (if not running)
 - ✅ Pull required model (llama3.2:1b)
-- ✅ Install all dependencies
+- ✅ Install all Python and npm dependencies
 - ✅ Initialize database
 - ✅ Start both frontend and backend
 
@@ -79,8 +98,8 @@ cd MultiAgentCourse/Assignment1
 **That's it!** 🎉
 
 The script will:
-1. Check prerequisites (Python, Node.js)
-2. Install Ollama automatically (macOS via Homebrew, Linux via install script)
+1. Check prerequisites (Python, Node.js, Ollama)
+2. Check ports availability (8000, 5173)
 3. Start Ollama service if not running
 4. Pull llama3.2:1b model (small, fast model ~1.3GB)
 5. Install backend dependencies (Python packages)
@@ -88,7 +107,6 @@ The script will:
 7. Initialize SQLite database
 8. Start backend on http://localhost:8000
 9. Start frontend on http://localhost:5173
-10. Open your browser automatically
 
 **First run:** 5-10 minutes (includes Ollama + model download)
 **Subsequent runs:** 15 seconds
@@ -927,11 +945,15 @@ For issues, questions, or feature requests:
 ## 🎯 Getting Started (TL;DR)
 
 ```bash
+# 0. Install prerequisites (one-time)
+# Python 3.10+, Node.js 18+, and Ollama
+# See Prerequisites section above for install commands
+
 # 1. Clone
 git clone <repository-url>
 cd MultiAgentCourse/Assignment1
 
-# 2. Run (installs everything automatically)
+# 2. Run (handles everything else automatically)
 ./start-dev.sh
 
 # 3. Open browser
@@ -945,14 +967,14 @@ open http://localhost:5173
 # 5. Start chatting! 🎉
 ```
 
-**That's it!** The script handles everything:
-- ✅ Ollama installation
-- ✅ Model download
+**That's it!** The script handles:
+- ✅ Ollama startup
+- ✅ Model download (llama3.2:1b)
 - ✅ Dependency installation
 - ✅ Database initialization
 - ✅ Service startup
 
-**First run:** 5-10 minutes
+**First run:** 5-10 minutes (model download)
 **Subsequent runs:** 15 seconds
 
 ---
