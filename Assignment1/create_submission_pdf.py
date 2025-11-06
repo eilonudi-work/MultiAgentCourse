@@ -36,8 +36,14 @@ def create_submission_pdf():
     c.setFont("Helvetica-Bold", 14)
     c.drawString(1 * inch, y_position, "Score: 93/100")
 
+    # Finish first page and add a blank second page
+    c.showPage()
+
+    # Second page (blank) - just call showPage to finalize it
+    c.showPage()
+
     c.save()
-    print(f"✅ PDF created successfully: {filename}")
+    print(f"✅ PDF created successfully: {filename} (2 pages)")
 
 if __name__ == "__main__":
     create_submission_pdf()
