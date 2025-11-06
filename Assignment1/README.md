@@ -79,6 +79,7 @@ Ollama Web GUI provides a complete, production-ready web interface for interacti
    - Linux: `curl -fsSL https://ollama.ai/install.sh | sh`
    - Windows: Download from [ollama.ai/download](https://ollama.ai/download)
    - Verify: `ollama --version`
+   - **Recommended model:** `llama3.2:1b` (~1.3GB) - The startup script will prompt you to download this model
 
 The startup script will then automatically:
 - ✅ Start Ollama service (if not running)
