@@ -30,6 +30,38 @@ Ollama Web GUI provides a complete, production-ready web interface for interacti
 
 ---
 
+## 📸 Screenshots
+
+### Setup & Configuration
+<p align="center">
+  <img src="images/Screenshot 2025-11-07 at 10.39.37.png" alt="Setup Configuration Modal" width="800">
+  <br>
+  <em>Initial setup screen with API key configuration and guided onboarding tour</em>
+</p>
+
+### Chat Interface
+<p align="center">
+  <img src="images/Screenshot 2025-11-07 at 10.45.26.png" alt="Chat Interface - Empty State" width="800">
+  <br>
+  <em>Clean, intuitive chat interface ready for conversations</em>
+</p>
+
+### Active Conversation
+<p align="center">
+  <img src="images/Screenshot 2025-11-07 at 11.04.29.png" alt="Active Chat Conversation" width="800">
+  <br>
+  <em>Real-time streaming chat with formatted markdown responses</em>
+</p>
+
+### Model Selection
+<p align="center">
+  <img src="images/Screenshot 2025-11-07 at 11.04.40.png" alt="Model Selector" width="800">
+  <br>
+  <em>Easy model switching with search and selection modal</em>
+</p>
+
+---
+
 ## ✨ Key Features
 
 ### Core Functionality
