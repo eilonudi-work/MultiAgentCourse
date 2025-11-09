@@ -52,7 +52,7 @@ const ChatInput = ({ onSend, disabled = false, placeholder = 'Type a message...'
     <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Input container */}
-        <div className="relative flex items-end gap-2">
+        <div className="relative flex items-center gap-2">
           {/* Textarea */}
           <div className="flex-1 relative">
             <textarea
@@ -88,7 +88,7 @@ const ChatInput = ({ onSend, disabled = false, placeholder = 'Type a message...'
             title="Send message (Cmd/Ctrl + Enter)"
           >
             <svg
-              className="w-5 h-5"
+              className="w-5 h-5 rotate-90"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
