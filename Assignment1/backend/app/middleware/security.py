@@ -133,6 +133,8 @@ class CSRFProtectionMiddleware(BaseHTTPMiddleware):
     EXEMPT_PATHS = [
         "/api/auth/register",
         "/api/auth/login",
+        "/api/auth/setup",
+        "/api/auth/verify",
         "/health",
         "/docs",
         "/openapi.json",
