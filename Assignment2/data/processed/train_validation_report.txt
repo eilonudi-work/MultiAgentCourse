@@ -1,0 +1,62 @@
+======================================================================
+DATASET VALIDATION REPORT
+======================================================================
+Dataset Split: train
+Total Samples: 40
+Overall Status: PASSED
+
+----------------------------------------------------------------------
+1. SIGNAL PROPERTIES VALIDATION
+----------------------------------------------------------------------
+Status: PASSED
+
+Frequency Validation:
+  - Mean Error: 0.000000 Hz
+  - Max Error: 0.000000 Hz
+  - Tolerance: 0.01 Hz
+  - Status: PASSED
+
+Amplitude Validation:
+  - Range: [0.508, 1.960]
+  - Expected: [0.5, 2.0]
+  - Mean: 1.148
+  - KS Test p-value: 0.1667
+  - Status: PASSED
+
+Phase Validation:
+  - Range: [0.468, 6.074]
+  - Expected: [0.000, 6.283]
+  - KS Test p-value: 0.9446
+  - Status: PASSED
+
+Noise Validation:
+  - Estimated Std: 0.1120
+  - Expected Std: 0.1000
+  - Error: 0.0120
+  - Status: PASSED
+
+----------------------------------------------------------------------
+2. DATASET BALANCE VALIDATION
+----------------------------------------------------------------------
+Status: PASSED
+
+Samples per Frequency:
+  - 1 Hz: 10 samples
+  - 3 Hz: 10 samples
+  - 5 Hz: 10 samples
+  - 7 Hz: 10 samples
+  - Expected: 10 per frequency
+  - Balanced: YES
+
+----------------------------------------------------------------------
+3. RECONSTRUCTION VALIDATION
+----------------------------------------------------------------------
+Status: PASSED
+
+  - Mean Reconstruction Variance: 0.010005
+  - Expected Noise Variance: 0.010000
+  - Error: 0.000005
+
+======================================================================
+FINAL STATUS: ALL VALIDATIONS PASSED
+======================================================================
