@@ -1,0 +1,298 @@
+[
+  {
+    "experiment_name": "grid_0001",
+    "config": {
+      "model": {
+        "lstm": {
+          "input_size": 5,
+          "hidden_size": 32,
+          "num_layers": 2,
+          "dropout": 0.1
+        }
+      },
+      "training": {
+        "num_epochs": 50,
+        "batch_size": 8,
+        "learning_rate": 0.001,
+        "optimizer": "adam",
+        "criterion": "mse",
+        "grad_clip": 1.0,
+        "seed": 42
+      },
+      "data": {
+        "train_path": "data/processed/train_dataset.h5",
+        "test_path": "data/processed/test_dataset.h5",
+        "normalize": false
+      },
+      "callbacks": {
+        "checkpoint": {
+          "enabled": true,
+          "save_best": true,
+          "save_last": true,
+          "save_every_n_epochs": 10,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "early_stopping": {
+          "enabled": true,
+          "patience": 15,
+          "min_delta": 0.0001,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "lr_scheduler": {
+          "enabled": true,
+          "scheduler": "plateau",
+          "monitor": "val_loss",
+          "factor": 0.5,
+          "patience": 5
+        },
+        "tensorboard": {
+          "enabled": true,
+          "log_dir": "runs/experiment1",
+          "log_every_n_batches": 10
+        }
+      },
+      "output": {
+        "checkpoint_dir": "checkpoints/experiment1",
+        "log_dir": "logs/experiment1"
+      }
+    },
+    "metrics": {
+      "final_train_loss": 0.6688923716545105,
+      "final_val_loss": 0.6016534666220347,
+      "best_train_loss": 0.6688923716545105,
+      "best_val_loss": 0.6016534666220347,
+      "best_val_correlation": 0.4600745888097313,
+      "best_val_r2": 0.12291604280471802,
+      "best_val_snr": 0.5695883929729462
+    },
+    "best_epoch": 4,
+    "total_epochs": 5,
+    "training_time": 67.33046817779541,
+    "timestamp": "2025-11-12 21:34:59",
+    "success": true
+  },
+  {
+    "experiment_name": "grid_0002",
+    "config": {
+      "model": {
+        "lstm": {
+          "input_size": 5,
+          "hidden_size": 32,
+          "num_layers": 2,
+          "dropout": 0.1
+        }
+      },
+      "training": {
+        "num_epochs": 50,
+        "batch_size": 8,
+        "learning_rate": 0.005,
+        "optimizer": "adam",
+        "criterion": "mse",
+        "grad_clip": 1.0,
+        "seed": 42
+      },
+      "data": {
+        "train_path": "data/processed/train_dataset.h5",
+        "test_path": "data/processed/test_dataset.h5",
+        "normalize": false
+      },
+      "callbacks": {
+        "checkpoint": {
+          "enabled": true,
+          "save_best": true,
+          "save_last": true,
+          "save_every_n_epochs": 10,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "early_stopping": {
+          "enabled": true,
+          "patience": 15,
+          "min_delta": 0.0001,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "lr_scheduler": {
+          "enabled": true,
+          "scheduler": "plateau",
+          "monitor": "val_loss",
+          "factor": 0.5,
+          "patience": 5
+        },
+        "tensorboard": {
+          "enabled": true,
+          "log_dir": "runs/experiment1",
+          "log_every_n_batches": 10
+        }
+      },
+      "output": {
+        "checkpoint_dir": "checkpoints/experiment1",
+        "log_dir": "logs/experiment1"
+      }
+    },
+    "metrics": {
+      "final_train_loss": 0.5790784239768982,
+      "final_val_loss": 0.5379014611244202,
+      "best_train_loss": 0.5790784239768982,
+      "best_val_loss": 0.5348645945390066,
+      "best_val_correlation": 0.4839231279013924,
+      "best_val_r2": 0.2340378761291504,
+      "best_val_snr": 1.1579270660877228
+    },
+    "best_epoch": 2,
+    "total_epochs": 5,
+    "training_time": 66.95220184326172,
+    "timestamp": "2025-11-12 21:36:06",
+    "success": true
+  },
+  {
+    "experiment_name": "grid_0003",
+    "config": {
+      "model": {
+        "lstm": {
+          "input_size": 5,
+          "hidden_size": 64,
+          "num_layers": 2,
+          "dropout": 0.1
+        }
+      },
+      "training": {
+        "num_epochs": 50,
+        "batch_size": 8,
+        "learning_rate": 0.001,
+        "optimizer": "adam",
+        "criterion": "mse",
+        "grad_clip": 1.0,
+        "seed": 42
+      },
+      "data": {
+        "train_path": "data/processed/train_dataset.h5",
+        "test_path": "data/processed/test_dataset.h5",
+        "normalize": false
+      },
+      "callbacks": {
+        "checkpoint": {
+          "enabled": true,
+          "save_best": true,
+          "save_last": true,
+          "save_every_n_epochs": 10,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "early_stopping": {
+          "enabled": true,
+          "patience": 15,
+          "min_delta": 0.0001,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "lr_scheduler": {
+          "enabled": true,
+          "scheduler": "plateau",
+          "monitor": "val_loss",
+          "factor": 0.5,
+          "patience": 5
+        },
+        "tensorboard": {
+          "enabled": true,
+          "log_dir": "runs/experiment1",
+          "log_every_n_batches": 10
+        }
+      },
+      "output": {
+        "checkpoint_dir": "checkpoints/experiment1",
+        "log_dir": "logs/experiment1"
+      }
+    },
+    "metrics": {
+      "final_train_loss": 0.6014161705970764,
+      "final_val_loss": 0.5378967920939127,
+      "best_train_loss": 0.5971253275871277,
+      "best_val_loss": 0.5378967920939127,
+      "best_val_correlation": 0.4836620988871049,
+      "best_val_r2": 0.23278039693832397,
+      "best_val_snr": 1.150803118944168
+    },
+    "best_epoch": 4,
+    "total_epochs": 5,
+    "training_time": 74.39524412155151,
+    "timestamp": "2025-11-12 21:37:20",
+    "success": true
+  },
+  {
+    "experiment_name": "grid_0004",
+    "config": {
+      "model": {
+        "lstm": {
+          "input_size": 5,
+          "hidden_size": 64,
+          "num_layers": 2,
+          "dropout": 0.1
+        }
+      },
+      "training": {
+        "num_epochs": 50,
+        "batch_size": 8,
+        "learning_rate": 0.005,
+        "optimizer": "adam",
+        "criterion": "mse",
+        "grad_clip": 1.0,
+        "seed": 42
+      },
+      "data": {
+        "train_path": "data/processed/train_dataset.h5",
+        "test_path": "data/processed/test_dataset.h5",
+        "normalize": false
+      },
+      "callbacks": {
+        "checkpoint": {
+          "enabled": true,
+          "save_best": true,
+          "save_last": true,
+          "save_every_n_epochs": 10,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "early_stopping": {
+          "enabled": true,
+          "patience": 15,
+          "min_delta": 0.0001,
+          "monitor": "val_loss",
+          "mode": "min"
+        },
+        "lr_scheduler": {
+          "enabled": true,
+          "scheduler": "plateau",
+          "monitor": "val_loss",
+          "factor": 0.5,
+          "patience": 5
+        },
+        "tensorboard": {
+          "enabled": true,
+          "log_dir": "runs/experiment1",
+          "log_every_n_batches": 10
+        }
+      },
+      "output": {
+        "checkpoint_dir": "checkpoints/experiment1",
+        "log_dir": "logs/experiment1"
+      }
+    },
+    "metrics": {
+      "final_train_loss": 0.601550680398941,
+      "final_val_loss": 0.5651170512040457,
+      "best_train_loss": 0.5976101875305175,
+      "best_val_loss": 0.536672830581665,
+      "best_val_correlation": 0.48541284720416145,
+      "best_val_r2": 0.22606003284454346,
+      "best_val_snr": 1.112927421927452
+    },
+    "best_epoch": 2,
+    "total_epochs": 5,
+    "training_time": 73.59188890457153,
+    "timestamp": "2025-11-12 21:38:34",
+    "success": true
+  }
+]
