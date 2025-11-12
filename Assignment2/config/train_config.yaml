@@ -1,0 +1,63 @@
+# Training configuration for LSTM Signal Extraction Model
+
+# Model architecture
+model:
+  lstm:
+    input_size: 5              # [S(t), C1, C2, C3, C4]
+    hidden_size: 64            # LSTM hidden size
+    num_layers: 2              # Number of LSTM layers
+    dropout: 0.1               # Dropout between layers
+
+# Training parameters
+training:
+  num_epochs: 50               # Number of training epochs
+  batch_size: 8                # Batch size (small due to long sequences)
+  learning_rate: 0.001         # Initial learning rate
+  optimizer: adam              # Optimizer: adam, sgd, adamw, rmsprop
+  criterion: mse               # Loss function: mse, mae, huber
+  grad_clip: 1.0               # Gradient clipping value (None to disable)
+  seed: 42                     # Random seed for reproducibility
+
+# Data configuration
+data:
+  train_path: data/processed/train_dataset.h5
+  test_path: data/processed/test_dataset.h5
+  normalize: false             # Whether to normalize signals
+
+# Callbacks configuration
+callbacks:
+  # Checkpoint saving
+  checkpoint:
+    enabled: true
+    save_best: true            # Save best model based on monitored metric
+    save_last: true            # Save last model at end of training
+    save_every_n_epochs: 10    # Save every N epochs (null to disable)
+    monitor: val_loss          # Metric to monitor for best model
+    mode: min                  # min or max
+
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 15               # Stop after N epochs without improvement
+    min_delta: 0.0001          # Minimum change to qualify as improvement
+    monitor: val_loss
+    mode: min
+
+  # Learning rate scheduling
+  lr_scheduler:
+    enabled: true
+    scheduler: plateau         # plateau, step, cosine
+    monitor: val_loss
+    factor: 0.5                # Factor to reduce LR (for plateau)
+    patience: 5                # Epochs to wait before reducing LR
+
+  # TensorBoard logging
+  tensorboard:
+    enabled: true
+    log_dir: runs/experiment1
+    log_every_n_batches: 10
+
+# Output configuration
+output:
+  checkpoint_dir: checkpoints/experiment1
+  log_dir: logs/experiment1
