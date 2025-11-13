@@ -1,0 +1,58 @@
+[
+  {
+    "error_rate": 0.0,
+    "original": "Artificial intelligence is rapidly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+    "corrupted_input": "Artificial intelligence is rapdly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+    "final_output": "Artificial intelligence is rapidly changing the modern world by enabling machines to learn from data and make smart decisions",
+    "intermediate_translations": {
+      "french": "L'intelligence artificielle transforme rapidement le monde moderne en permettant aux machines d'apprendre à partir de données et de prendre des décisions intelligentes",
+      "hebrew": "הבינה המלאכותית משנה במהירות את העולם המודרני בכך שמאפשרת למכונות ללמוד מנתונים ולקבל החלטות חכמות"
+    },
+    "cosine_distance": 0.03254544671506343,
+    "cosine_similarity": 0.9674545532849366,
+    "euclidean_distance": 0.25512916872100044,
+    "manhattan_distance": 3.9831946786620467
+  },
+  {
+    "error_rate": 0.1,
+    "original": "Artificial intelligence is rapidly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+    "corrupted_input": "Artificial intelligence is rapdly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+    "final_output": "Artificial intelligence is rapidly changing the modern world by enabling machines to learn from data and make smart decisions",
+    "intermediate_translations": {
+      "french": "L'intelligence artificielle transforme rapidement le monde moderne en permettant aux machines d'apprendre à partir de données et de prendre des décisions intelligentes",
+      "hebrew": "הבינה המלאכותית משנה במהירות את העולם המודרני בכך שמאפשרת למכונות ללמוד מנתונים ולקבל החלטות חכמות"
+    },
+    "cosine_distance": 0.03254544671506343,
+    "cosine_similarity": 0.9674545532849366,
+    "euclidean_distance": 0.25512916872100044,
+    "manhattan_distance": 3.9831946786620467
+  },
+  {
+    "error_rate": 0.25,
+    "original": "Artificial intelligence is rapidly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+    "corrupted_input": "Arificial intelligence is rzpidly transforming the modern owrld by enabling machines to learn from data and make intelligent decisions",
+    "final_output": "Artificial intelligence is rapidly changing the modern world by enabling machines to learn from data and make intelligent decisions",
+    "intermediate_translations": {
+      "french": "L'intelligence artificielle transforme rapidement le monde moderne en permettant aux machines d'apprendre à partir de données et de prendre des décisions intelligentes",
+      "hebrew": "הבינה המלאכותית משנה במהירות את העולם המודרני בכך שמאפשרת למכונות ללמוד מנתונים ולקבל החלטות חכמות"
+    },
+    "cosine_distance": 0.024698964173365145,
+    "cosine_similarity": 0.9753010358266349,
+    "euclidean_distance": 0.22225635779530958,
+    "manhattan_distance": 3.429937428881871
+  },
+  {
+    "error_rate": 0.5,
+    "original": "Artificial intelligence is rapidly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+    "corrupted_input": "rAtificial intelligencs is rapidy transforming the modern wrld by enabling machinez to learn from data and make intelligent decusions",
+    "final_output": "Artificial intelligence is rapidly changing the modern world by enabling machines to learn from data and make intelligent decisions",
+    "intermediate_translations": {
+      "french": "L'intelligence artificielle transforme rapidement le monde moderne en permettant aux machines d'apprendre à partir de données et de prendre des décisions intelligentes",
+      "hebrew": "הבינה המלאכותית משנה במהירות את העולם המודרני בכך שמאפשרת למכונות ללמוד מנתונים ולקבל החלטות חכמות"
+    },
+    "cosine_distance": 0.024698943868149748,
+    "cosine_similarity": 0.9753010561318503,
+    "euclidean_distance": 0.22225635779530958,
+    "manhattan_distance": 3.429937428881871
+  }
+]

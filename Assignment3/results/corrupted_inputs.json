@@ -1,0 +1,91 @@
+{
+  "original": "Artificial intelligence is rapidly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+  "error_levels": [
+    0.0,
+    0.1,
+    0.25,
+    0.5
+  ],
+  "corrupted_inputs": {
+    "0.0": {
+      "text": "Artificial intelligence is rapdly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+      "changes": [
+        [
+          "rapidly",
+          "rapdly"
+        ]
+      ]
+    },
+    "0.1": {
+      "text": "Artificial intelligence is rapdly transforming the modern world by enabling machines to learn from data and make intelligent decisions",
+      "changes": [
+        [
+          "rapidly",
+          "rapdly"
+        ]
+      ]
+    },
+    "0.25": {
+      "text": "Arificial intelligence is rzpidly transforming the modern owrld by enabling machines to learn from data and make intelligent decisions",
+      "changes": [
+        [
+          "rapidly",
+          "rzpidly"
+        ],
+        [
+          "Artificial",
+          "Arificial"
+        ],
+        [
+          "by",
+          "by"
+        ],
+        [
+          "world",
+          "owrld"
+        ]
+      ]
+    },
+    "0.5": {
+      "text": "rAtificial intelligencs is rapidy transforming the modern wrld by enabling machinez to learn from data and make intelligent decusions",
+      "changes": [
+        [
+          "rapidly",
+          "rapidy"
+        ],
+        [
+          "Artificial",
+          "rAtificial"
+        ],
+        [
+          "by",
+          "by"
+        ],
+        [
+          "world",
+          "wrld"
+        ],
+        [
+          "decisions",
+          "decusions"
+        ],
+        [
+          "is",
+          "is"
+        ],
+        [
+          "to",
+          "to"
+        ],
+        [
+          "intelligence",
+          "intelligencs"
+        ],
+        [
+          "machines",
+          "machinez"
+        ]
+      ]
+    }
+  }
+}
