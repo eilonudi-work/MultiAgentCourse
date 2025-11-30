@@ -1,0 +1,31 @@
+position,run,correct,response
+start,1,True,The CEO of the company is David Cohen.
+start,2,False,The document does not provide the name of the CEO of the company.
+start,3,False,The document does not provide the name of the CEO of the company.
+start,4,True,The CEO of the company is David Cohen.
+start,5,False,The document does not provide the name of the CEO of the company.
+start,6,False,The document does not provide the name of the CEO of the company.
+start,7,False,The document does not provide the name of the CEO of the company.
+start,8,True,The CEO of the company is David Cohen.
+start,9,False,The document does not provide the name of the CEO of the company.
+start,10,True,The CEO of the company is David Cohen.
+middle,1,False,The document does not provide the name of the CEO of the company.
+middle,2,False,The document does not provide the name of the CEO of the company.
+middle,3,False,The document does not provide the name of the CEO of the company.
+middle,4,False,The document does not provide the name of the CEO of the company.
+middle,5,True,The CEO of the company is David Cohen.
+middle,6,False,The document does not provide the name of the CEO of the company.
+middle,7,False,The document does not provide the name of the CEO of the company.
+middle,8,False,The document does not provide the name of the CEO of the company.
+middle,9,False,The document does not provide the name of the CEO of the company.
+middle,10,False,The document does not provide the name of the CEO of the company.
+end,1,True,The CEO of the company is David Cohen.
+end,2,True,The CEO of the company is David Cohen.
+end,3,True,The CEO of the company is David Cohen.
+end,4,True,The CEO of the company is David Cohen.
+end,5,True,The CEO of the company is David Cohen.
+end,6,True,The CEO of the company is David Cohen.
+end,7,True,"The CEO of the company is David Cohen, as mentioned in the document."
+end,8,True,The CEO of the company is David Cohen.
+end,9,True,The CEO of the company is David Cohen.
+end,10,True,The CEO of the company is David Cohen.

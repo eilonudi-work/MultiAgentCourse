@@ -1,0 +1,26 @@
+num_docs,trial,tokens,latency,correct,response
+2,1,1143,6.696738004684448,True,"The CEO of the company is David Cohen, as mentioned in the document."
+2,2,1130,6.32469916343689,False,The document does not provide the name of the CEO of the company.
+2,3,1145,6.490139961242676,False,The document does not provide the name of the CEO of the company.
+2,4,1134,7.417891025543213,True,"The document does not provide the name of the CEO directly, but it mentions that ""The CEO of the company is David Cohen"" later in the text."
+2,5,1142,6.795990943908691,False,The document does not provide the name of the CEO of the company.
+5,1,2822,17.039557933807373,False,The document does not provide the name of the CEO of the company.
+5,2,2846,17.137609004974365,False,The document does not provide the name of the CEO of the company.
+5,3,2819,16.93318009376526,False,The document does not provide the name of the CEO of the company.
+5,4,2841,17.00796103477478,False,The document does not provide information about the CEO's name.
+5,5,2821,17.05083179473877,False,The document does not provide the name of the CEO of the company.
+10,1,5642,22.86867094039917,False,The text does not provide the name of the CEO of the company.
+10,2,5617,22.83857011795044,False,The text does not provide information about the CEO of the company.
+10,3,5629,22.907429218292236,False,The text does not provide information about who the CEO of the company is.
+10,4,5664,22.817620992660522,False,The text does not provide information about the CEO of the company.
+10,5,5640,22.806011199951172,False,The text does not provide information about the CEO of the company.
+20,1,11326,22.848212957382202,False,The text does not provide information about the CEO of the company.
+20,2,11313,22.890774965286255,False,The text does not provide any information about the CEO of the company.
+20,3,11278,22.904000997543335,False,The text does not provide any information about the CEO of the company.
+20,4,11279,22.856016874313354,False,The text does not provide information about the CEO of the company.
+20,5,11244,22.891100883483887,False,The text does not provide any information about the CEO of the company.
+50,1,28181,22.93284511566162,False,The text does not provide information about the CEO of the company.
+50,2,28187,23.007282972335815,False,The text does not provide information about the CEO of the company.
+50,3,28236,22.997503995895386,False,The text does not provide any information about the CEO of the company.
+50,4,28146,23.01028299331665,False,The text does not provide any information about the CEO of the company.
+50,5,28218,22.953153133392334,False,The text does not provide information about the CEO of the company.
