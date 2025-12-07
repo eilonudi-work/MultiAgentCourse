@@ -2,6 +2,17 @@
 
 A proof-of-concept implementation comparing different prompt engineering techniques using sentiment analysis with **local Ollama models**.
 
+## 🚀 Quick Start (2 Commands)
+
+```bash
+./setup.sh    # Automatic installation (Ollama + dependencies)
+./run.sh      # Run experiments
+```
+
+**That's it!** See [QUICKSTART.md](QUICKSTART.md) for more details.
+
+---
+
 ## Overview
 
 This project systematically evaluates how different prompting strategies affect LLM performance on sentiment classification tasks using local models via Ollama. We test:
@@ -11,10 +22,10 @@ This project systematically evaluates how different prompting strategies affect 
 - Chain of thought reasoning
 
 **Benefits of using Ollama:**
-- No API costs
-- Unlimited experimentation
-- Privacy (all processing is local)
-- Fast iteration
+- ✨ No API costs - completely free
+- 🔒 Privacy - all processing is local
+- ⚡ Fast iteration - no rate limits
+- 🔄 Unlimited experimentation
 
 ## Project Structure
 
@@ -30,7 +41,46 @@ This project systematically evaluates how different prompting strategies affect 
 └── .env.example           # API configuration template
 ```
 
-## Setup Instructions
+## Quick Start (Automated Setup)
+
+### One-Command Setup
+
+```bash
+./setup.sh
+```
+
+This script will automatically:
+- ✓ Install Ollama (if not present)
+- ✓ Start Ollama service
+- ✓ Download the llama2 model
+- ✓ Create Python virtual environment
+- ✓ Install all dependencies
+- ✓ Configure environment variables
+- ✓ Run setup verification tests
+
+**Use a different model:**
+```bash
+./setup.sh mistral  # or llama3, phi, etc.
+```
+
+### Run Experiments
+
+```bash
+./run.sh
+```
+
+**With options:**
+```bash
+./run.sh --model mistral      # Use different model
+./run.sh --show-errors        # Show misclassified examples
+./run.sh --help              # Show all options
+```
+
+---
+
+## Manual Setup (Alternative)
+
+If you prefer to set up manually:
 
 ### 1. Install Ollama
 
@@ -86,18 +136,11 @@ cp .env.example .env
 # Edit .env if you want to use a different model or host
 ```
 
-### 7. Verify Dataset
+### 7. Test Setup
 
 ```bash
-python -c "import json; print(len(json.load(open('data/sentiment_dataset.json'))))"
-# Should output: 30
-```
-
-### 8. Test Configuration
-
-```bash
-python src/config.py
-# Should display your Ollama configuration
+python test_setup.py
+# Should pass all verification tests
 ```
 
 ## Dataset
@@ -109,26 +152,20 @@ python src/config.py
 
 ## Running Experiments
 
-### Quick Setup Test
+### Automated Way (Recommended)
 
 ```bash
-python test_setup.py
+./run.sh
 ```
 
-This will verify:
-- Ollama connection
-- Model availability
-- Sentiment classification functionality
-- Dataset integrity
-
-### Run Baseline Experiment
+### Manual Way
 
 ```bash
 cd src
 python baseline_experiment.py
 ```
 
-Options:
+**Command-line options:**
 ```bash
 # Use a different model
 python baseline_experiment.py --model mistral
@@ -142,6 +179,18 @@ python baseline_experiment.py --show-errors
 # Custom dataset
 python baseline_experiment.py --dataset path/to/dataset.json
 ```
+
+### Test Setup Only
+
+```bash
+python test_setup.py
+```
+
+This verifies:
+- Ollama connection
+- Model availability
+- Sentiment classification functionality
+- Dataset integrity
 
 ### Expected Output
 
