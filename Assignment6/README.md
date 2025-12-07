@@ -226,12 +226,60 @@ Confusion Matrix:
   F1 Score:  86.9%
 ```
 
+## Run All Prompt Variations (Phase 3) ✓
+
+Compare different prompting strategies:
+
+```bash
+./run_all.sh
+```
+
+This runs **6 prompt variations**:
+- **Baseline**: Simple direct instruction
+- **Role-Based**: Expert role definition
+- **Few-Shot**: Learning from 3 examples
+- **Chain of Thought**: Step-by-step reasoning
+- **Structured Output**: Formatted response requests
+- **Contrastive**: Comparing positive vs negative aspects
+
+**Options:**
+```bash
+# Run specific variations only
+./run_all.sh --variations baseline few_shot chain_of_thought
+
+# Use different model
+./run_all.sh --model mistral
+
+# Don't save results
+./run_all.sh --no-save
+```
+
+**Manual execution:**
+```bash
+cd src
+python run_all_experiments.py
+python improved_prompts.py  # View all prompt variations
+```
+
+### Comparison Output
+
+After running all variations, you'll get a comparison table:
+
+```
+Variation            Accuracy   F1 Score  Precision     Recall
+--------------------------------------------------------------------------------
+few_shot               93.3%      92.5%      91.2%      93.8%
+chain_of_thought       90.0%      89.8%      88.5%      91.1%
+role_based             86.7%      86.1%      85.0%      87.3%
+baseline               83.3%      82.9%      81.5%      84.3%
+```
+
 ## Next Steps
 
-Phase 3 will implement:
-1. Improved prompt variations (role definition, few-shot, CoT)
-2. Batch experiment runner for all variations
-3. Comparison visualizations and analysis
+Phase 4 will implement:
+1. Visualization charts (comparison graphs, histograms)
+2. Statistical analysis
+3. Final insights report
 
 ## Requirements
 
