@@ -274,12 +274,71 @@ role_based             86.7%      86.1%      85.0%      87.3%
 baseline               83.3%      82.9%      81.5%      84.3%
 ```
 
-## Next Steps
+## Analysis & Visualization (Phase 4) ✓
 
-Phase 4 will implement:
-1. Visualization charts (comparison graphs, histograms)
-2. Statistical analysis
-3. Final insights report
+Generate comprehensive analysis and visualizations:
+
+```bash
+./analyze.sh
+```
+
+This creates:
+- **5 Visualization Charts** (PNG format)
+  - Accuracy comparison bar chart
+  - Comprehensive metrics comparison
+  - Distance distribution histograms
+  - Confusion matrix heatmaps
+  - Per-category performance heatmap
+
+- **Statistical Analysis** (JSON format)
+  - Rankings by all metrics
+  - Improvements over baseline
+  - Consistency analysis
+  - Category-wise performance
+  - Key findings
+
+- **Final Report** (Markdown format)
+  - Executive summary
+  - Detailed methodology
+  - Complete results
+  - Insights and recommendations
+  - Conclusion
+
+**Manual execution:**
+```bash
+cd analysis
+python statistical_analysis.py --latest      # Statistical analysis
+python visualization.py --latest             # Generate charts
+python generate_report.py --latest           # Create report
+```
+
+**View results:**
+```bash
+open visualizations/                         # View charts
+cat EXPERIMENT_REPORT.md                     # Read report
+cat analysis/statistical_analysis_*.json | jq  # View analysis
+```
+
+---
+
+## Complete Workflow
+
+```bash
+# 1. Initial setup (one-time)
+./setup.sh
+
+# 2. Run baseline experiment
+./run.sh
+
+# 3. Run all prompt variations
+./run_all.sh
+
+# 4. Generate analysis and visualizations
+./analyze.sh
+
+# 5. View final report
+cat EXPERIMENT_REPORT.md
+```
 
 ## Requirements
 

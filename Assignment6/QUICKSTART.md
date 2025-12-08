@@ -106,6 +106,17 @@ Assignment6/
 
 ## Troubleshooting
 
+### "ModuleNotFoundError" or dependency issues
+```bash
+# Upgrade build tools and reinstall
+source venv/bin/activate
+pip3 install --upgrade pip setuptools wheel
+pip3 install -r requirements.txt
+
+# Verify with quick test
+python quick_test.py
+```
+
 ### "Ollama connection failed"
 ```bash
 # Start Ollama manually
@@ -130,9 +141,12 @@ ollama pull llama2
 ./setup.sh
 ```
 
-### Still having issues?
+### Quick verification
 ```bash
-# Run diagnostic test
+# Run quick integration test
+python quick_test.py
+
+# Or full diagnostic test
 python test_setup.py
 ```
 

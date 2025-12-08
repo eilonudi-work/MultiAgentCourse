@@ -22,6 +22,13 @@ class BaselineExperiment:
             dataset_path: Path to sentiment dataset JSON
             model_name: Optional model name override
         """
+        # Resolve dataset path relative to project root
+        if not os.path.isabs(dataset_path):
+            # Get project root (parent of src directory)
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.dirname(current_dir)
+            dataset_path = os.path.join(project_root, dataset_path)
+
         self.dataset_path = dataset_path
         self.client = OllamaClient(model_name)
         self.metrics_calculator = SentimentMetrics()
@@ -136,13 +143,16 @@ class BaselineExperiment:
 
     def _save_results(self, metrics: Dict[str, Any]):
         """Save results to JSON files."""
-        # Create results directory if needed
-        os.makedirs("results", exist_ok=True)
+        # Get project root and create results directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        results_dir = os.path.join(project_root, "results")
+        os.makedirs(results_dir, exist_ok=True)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # Save detailed results
-        results_file = f"results/baseline_results_{timestamp}.json"
+        results_file = os.path.join(results_dir, f"baseline_results_{timestamp}.json")
         with open(results_file, 'w') as f:
             json.dump({
                 "experiment": "baseline",
@@ -154,7 +164,7 @@ class BaselineExperiment:
         print(f"\n✓ Results saved to {results_file}")
 
         # Save metrics summary
-        metrics_file = f"results/baseline_metrics_{timestamp}.json"
+        metrics_file = os.path.join(results_dir, f"baseline_metrics_{timestamp}.json")
         with open(metrics_file, 'w') as f:
             json.dump({
                 "experiment": "baseline",

@@ -196,8 +196,7 @@ print_success "Virtual environment activated"
 # Step 6: Install dependencies
 print_info "Step 6/7: Installing Python dependencies..."
 
-pip install --upgrade pip >/dev/null 2>&1
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 if [ $? -eq 0 ]; then
     print_success "Python dependencies installed successfully"

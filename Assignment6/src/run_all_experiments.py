@@ -24,6 +24,13 @@ class BatchExperimentRunner:
             dataset_path: Path to sentiment dataset JSON
             model_name: Optional model name override
         """
+        # Resolve dataset path relative to project root
+        if not os.path.isabs(dataset_path):
+            # Get project root (parent of src directory)
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.dirname(current_dir)
+            dataset_path = os.path.join(project_root, dataset_path)
+
         self.dataset_path = dataset_path
         self.client = OllamaClient(model_name)
         self.metrics_calculator = SentimentMetrics()
@@ -225,12 +232,16 @@ class BatchExperimentRunner:
 
     def save_all_results(self):
         """Save all results to JSON files."""
-        os.makedirs("results", exist_ok=True)
+        # Get project root and create results directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        results_dir = os.path.join(project_root, "results")
+        os.makedirs(results_dir, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # Save detailed results for each variation
         for variation_name, result in self.all_results.items():
-            results_file = f"results/{variation_name}_results_{timestamp}.json"
+            results_file = os.path.join(results_dir, f"{variation_name}_results_{timestamp}.json")
             with open(results_file, 'w') as f:
                 json.dump({
                     "experiment": variation_name,
@@ -244,7 +255,7 @@ class BatchExperimentRunner:
             print(f"✓ Saved {variation_name} results to {results_file}")
 
         # Save comparison metrics
-        comparison_file = f"results/comparison_metrics_{timestamp}.json"
+        comparison_file = os.path.join(results_dir, f"comparison_metrics_{timestamp}.json")
         with open(comparison_file, 'w') as f:
             json.dump({
                 "timestamp": timestamp,
