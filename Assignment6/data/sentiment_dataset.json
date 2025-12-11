@@ -1,0 +1,152 @@
+[
+  {
+    "text": "This movie was absolutely fantastic! I loved every minute of it.",
+    "ground_truth": "positive",
+    "category": "entertainment"
+  },
+  {
+    "text": "Worst product I've ever purchased. Complete waste of money.",
+    "ground_truth": "negative",
+    "category": "product"
+  },
+  {
+    "text": "The service at this restaurant was outstanding and the food was delicious.",
+    "ground_truth": "positive",
+    "category": "food"
+  },
+  {
+    "text": "I'm extremely disappointed with the quality. It broke after one day.",
+    "ground_truth": "negative",
+    "category": "product"
+  },
+  {
+    "text": "What a wonderful experience! Highly recommend to everyone.",
+    "ground_truth": "positive",
+    "category": "general"
+  },
+  {
+    "text": "Terrible customer support. They never responded to my emails.",
+    "ground_truth": "negative",
+    "category": "service"
+  },
+  {
+    "text": "This book changed my life. Such an inspiring read!",
+    "ground_truth": "positive",
+    "category": "entertainment"
+  },
+  {
+    "text": "The app keeps crashing. Very frustrating and unreliable.",
+    "ground_truth": "negative",
+    "category": "technology"
+  },
+  {
+    "text": "Amazing quality and fast shipping. Will definitely buy again!",
+    "ground_truth": "positive",
+    "category": "product"
+  },
+  {
+    "text": "Not worth the price at all. Very disappointed with my purchase.",
+    "ground_truth": "negative",
+    "category": "product"
+  },
+  {
+    "text": "The staff was incredibly friendly and helpful throughout my visit.",
+    "ground_truth": "positive",
+    "category": "service"
+  },
+  {
+    "text": "Poor quality materials and terrible design. Would not recommend.",
+    "ground_truth": "negative",
+    "category": "product"
+  },
+  {
+    "text": "Best purchase I've made this year! Exceeded all my expectations.",
+    "ground_truth": "positive",
+    "category": "product"
+  },
+  {
+    "text": "The hotel was dirty and the staff was rude. Never going back.",
+    "ground_truth": "negative",
+    "category": "hospitality"
+  },
+  {
+    "text": "I'm so happy with this decision. Everything worked out perfectly!",
+    "ground_truth": "positive",
+    "category": "general"
+  },
+  {
+    "text": "This is a scam. Don't waste your time or money on this.",
+    "ground_truth": "negative",
+    "category": "general"
+  },
+  {
+    "text": "Brilliant performance! The actors were phenomenal.",
+    "ground_truth": "positive",
+    "category": "entertainment"
+  },
+  {
+    "text": "Horrible experience from start to finish. Total disaster.",
+    "ground_truth": "negative",
+    "category": "general"
+  },
+  {
+    "text": "The interface is intuitive and the features are exactly what I needed.",
+    "ground_truth": "positive",
+    "category": "technology"
+  },
+  {
+    "text": "Buggy software with no support. Save yourself the headache.",
+    "ground_truth": "negative",
+    "category": "technology"
+  },
+  {
+    "text": "Exceptional value for money. I'm thoroughly impressed!",
+    "ground_truth": "positive",
+    "category": "product"
+  },
+  {
+    "text": "The wait time was ridiculous and the service was subpar.",
+    "ground_truth": "negative",
+    "category": "service"
+  },
+  {
+    "text": "Beautiful design and works flawlessly. Couldn't be happier!",
+    "ground_truth": "positive",
+    "category": "product"
+  },
+  {
+    "text": "Misleading advertising. The actual product is nothing like described.",
+    "ground_truth": "negative",
+    "category": "product"
+  },
+  {
+    "text": "Five stars all the way! This exceeded every expectation.",
+    "ground_truth": "positive",
+    "category": "general"
+  },
+  {
+    "text": "Unreliable and inconsistent. Very frustrating to use.",
+    "ground_truth": "negative",
+    "category": "technology"
+  },
+  {
+    "text": "The team was professional and delivered outstanding results.",
+    "ground_truth": "positive",
+    "category": "service"
+  },
+  {
+    "text": "Overpriced and underwhelming. Expected much better quality.",
+    "ground_truth": "negative",
+    "category": "product"
+  },
+  {
+    "text": "Love it! This has made my daily routine so much easier.",
+    "ground_truth": "positive",
+    "category": "product"
+  },
+  {
+    "text": "Regret buying this. It doesn't work as advertised.",
+    "ground_truth": "negative",
+    "category": "product"
+  }
+]

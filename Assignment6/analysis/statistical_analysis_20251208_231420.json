@@ -1,0 +1,240 @@
+{
+  "timestamp": "2025-12-08T23:14:20.897800",
+  "model": "llama2",
+  "num_variations": 6,
+  "rankings": {
+    "by_accuracy": [
+      [
+        "few_shot",
+        "100.0%"
+      ],
+      [
+        "structured_output",
+        "100.0%"
+      ],
+      [
+        "baseline",
+        "76.7%"
+      ],
+      [
+        "role_based",
+        "76.7%"
+      ],
+      [
+        "chain_of_thought",
+        "66.7%"
+      ],
+      [
+        "contrastive",
+        "53.3%"
+      ]
+    ],
+    "by_f1_score": [
+      [
+        "few_shot",
+        "100.0%"
+      ],
+      [
+        "structured_output",
+        "100.0%"
+      ],
+      [
+        "baseline",
+        "81.1%"
+      ],
+      [
+        "role_based",
+        "81.1%"
+      ],
+      [
+        "chain_of_thought",
+        "75.0%"
+      ],
+      [
+        "contrastive",
+        "68.2%"
+      ]
+    ]
+  },
+  "best_performer": {
+    "name": "few_shot",
+    "accuracy": "100.0%",
+    "f1_score": "100.0%"
+  },
+  "worst_performer": {
+    "name": "contrastive",
+    "accuracy": "53.3%",
+    "f1_score": "68.2%"
+  },
+  "overall_improvement": "87.5%",
+  "improvements_over_baseline": {
+    "few_shot": "+30.4%",
+    "structured_output": "+30.4%",
+    "baseline": "+0.0%",
+    "role_based": "+0.0%",
+    "chain_of_thought": "-13.0%",
+    "contrastive": "-30.4%"
+  },
+  "category_analysis": {
+    "product": {
+      "results": {
+        "baseline": 0.75,
+        "role_based": 0.8333333333333334,
+        "few_shot": 1.0,
+        "chain_of_thought": 0.5833333333333334,
+        "structured_output": 1.0,
+        "contrastive": 0.4166666666666667
+      },
+      "best_variation": "few_shot",
+      "best_accuracy": 1.0,
+      "worst_variation": "contrastive",
+      "worst_accuracy": 0.4166666666666667,
+      "mean_accuracy": 0.763888888888889,
+      "std_accuracy": 0.21200468781213536
+    },
+    "service": {
+      "results": {
+        "baseline": 0.75,
+        "role_based": 0.75,
+        "few_shot": 1.0,
+        "chain_of_thought": 1.0,
+        "structured_output": 1.0,
+        "contrastive": 0.5
+      },
+      "best_variation": "few_shot",
+      "best_accuracy": 1.0,
+      "worst_variation": "contrastive",
+      "worst_accuracy": 0.5,
+      "mean_accuracy": 0.8333333333333334,
+      "std_accuracy": 0.18633899812498245
+    },
+    "technology": {
+      "results": {
+        "baseline": 0.5,
+        "role_based": 0.5,
+        "few_shot": 1.0,
+        "chain_of_thought": 0.5,
+        "structured_output": 1.0,
+        "contrastive": 0.5
+      },
+      "best_variation": "few_shot",
+      "best_accuracy": 1.0,
+      "worst_variation": "baseline",
+      "worst_accuracy": 0.5,
+      "mean_accuracy": 0.6666666666666666,
+      "std_accuracy": 0.23570226039551584
+    },
+    "general": {
+      "results": {
+        "baseline": 0.8,
+        "role_based": 0.6,
+        "few_shot": 1.0,
+        "chain_of_thought": 0.6,
+        "structured_output": 1.0,
+        "contrastive": 0.6
+      },
+      "best_variation": "few_shot",
+      "best_accuracy": 1.0,
+      "worst_variation": "role_based",
+      "worst_accuracy": 0.6,
+      "mean_accuracy": 0.7666666666666666,
+      "std_accuracy": 0.17950549357115014
+    },
+    "entertainment": {
+      "results": {
+        "baseline": 1.0,
+        "role_based": 1.0,
+        "few_shot": 1.0,
+        "chain_of_thought": 1.0,
+        "structured_output": 1.0,
+        "contrastive": 1.0
+      },
+      "best_variation": "baseline",
+      "best_accuracy": 1.0,
+      "worst_variation": "baseline",
+      "worst_accuracy": 1.0,
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    "hospitality": {
+      "results": {
+        "baseline": 1.0,
+        "role_based": 1.0,
+        "few_shot": 1.0,
+        "chain_of_thought": 0.0,
+        "structured_output": 1.0,
+        "contrastive": 0.0
+      },
+      "best_variation": "baseline",
+      "best_accuracy": 1.0,
+      "worst_variation": "chain_of_thought",
+      "worst_accuracy": 0.0,
+      "mean_accuracy": 0.6666666666666666,
+      "std_accuracy": 0.4714045207910317
+    },
+    "food": {
+      "results": {
+        "baseline": 1.0,
+        "role_based": 1.0,
+        "few_shot": 1.0,
+        "chain_of_thought": 1.0,
+        "structured_output": 1.0,
+        "contrastive": 1.0
+      },
+      "best_variation": "baseline",
+      "best_accuracy": 1.0,
+      "worst_variation": "baseline",
+      "worst_accuracy": 1.0,
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    }
+  },
+  "consistency_analysis": {
+    "by_variation": {
+      "baseline": {
+        "mean_distance": 0.03339359536767006,
+        "std_distance": 0.06053103506565094,
+        "coefficient_of_variation": 1.8126540253959578,
+        "interpretation": "high consistency"
+      },
+      "role_based": {
+        "mean_distance": 0.03339359536767006,
+        "std_distance": 0.06053103506565094,
+        "coefficient_of_variation": 1.8126540253959578,
+        "interpretation": "high consistency"
+      },
+      "few_shot": {
+        "mean_distance": 0.0,
+        "std_distance": 0.0,
+        "coefficient_of_variation": 0,
+        "interpretation": "high consistency"
+      },
+      "chain_of_thought": {
+        "mean_distance": 0.04770513251423836,
+        "std_distance": 0.06746524572372437,
+        "coefficient_of_variation": 1.4142135692336308,
+        "interpretation": "high consistency"
+      },
+      "structured_output": {
+        "mean_distance": 0.0,
+        "std_distance": 0.0,
+        "coefficient_of_variation": 0,
+        "interpretation": "high consistency"
+      },
+      "contrastive": {
+        "mean_distance": 0.06678719073534012,
+        "std_distance": 0.07139850407838821,
+        "coefficient_of_variation": 1.0690448766039808,
+        "interpretation": "high consistency"
+      }
+    },
+    "most_consistent": "few_shot",
+    "least_consistent": "contrastive"
+  },
+  "key_findings": [
+    "few_shot achieved the highest accuracy at 100.0%",
+    "few_shot showed +30.4% improvement over baseline",
+    "few_shot demonstrated the most consistent performance",
+    "Category 'hospitality' showed the most variation across prompts (\u03c3=0.471)"
+  ]
+}
